@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="it">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Giornata Montessori</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: la pagina non scorre mai. Barra laterale + area di lavoro alta quanto lo schermo;
+   scorrono solo pannelli (.scroll) e tabelle (.dt-scorri). Tablet: barra a icone. Telefono: barra in basso.
+   Prototipo navigabile: dati inventati, in memoria (si azzerano ricaricando). */
+:root{
+  --paper:#F6F8F1;--surface:#FFFFFF;--surface-2:#F1F5EA;--ink:#14324D;--muted:#5B6B78;--line:#DCE3D3;--head-bg:#EDF2E6;
+  --brand:#0F72B9;--leaf:#B2D17A;--leaf-ink:#4C7420;--gold:#B07A0E;--gold-soft:#FBF0D6;
+  --ok:#2E7D4F;--ok-soft:#E3F2E8;--no:#B4413A;--no-soft:#F8E4E2;--sky-soft:#E3EFF9;--leaf-soft:#EEF5E1;
+  --shadow:0 1px 2px rgb(20 50 77 / .06),0 4px 14px rgb(20 50 77 / .06);
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --side:240px;--navh:0px;--logo-bg:transparent;--logo-pad:0px;--on-brand:#fff;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0F1A23;--surface:#16242F;--surface-2:#1B2C38;--ink:#E6EEF4;--muted:#9DB0BE;--line:#2A3B48;--head-bg:#1D2F3B;--brand:#5AAEEB;--leaf:#B2D17A;--leaf-ink:#B2D17A;
+  --gold:#E9B44C;--gold-soft:#3A2F17;--ok:#6CCB92;--ok-soft:#1B3527;--no:#F08C84;--no-soft:#3D2120;--sky-soft:#18324A;--leaf-soft:#22321A;
+  --shadow:0 1px 2px rgb(0 0 0 / .3);--logo-bg:#fff;--logo-pad:6px 10px;--on-brand:#0B1620;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1A23;--surface:#16242F;--surface-2:#1B2C38;--ink:#E6EEF4;--muted:#9DB0BE;--line:#2A3B48;--head-bg:#1D2F3B;--brand:#5AAEEB;--leaf:#B2D17A;--leaf-ink:#B2D17A;
+  --gold:#E9B44C;--gold-soft:#3A2F17;--ok:#6CCB92;--ok-soft:#1B3527;--no:#F08C84;--no-soft:#3D2120;--sky-soft:#18324A;--leaf-soft:#22321A;
+  --shadow:0 1px 2px rgb(0 0 0 / .3);--logo-bg:#fff;--logo-pad:6px 10px;--on-brand:#0B1620;color-scheme:dark}
+*{box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+html,body{height:100%;overflow:hidden}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--f-body)}
+#root{height:100%}
+[hidden]{display:none!important}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:1.1;margin:0;text-wrap:balance}
+h1{font-size:2rem}h2{font-size:1.35rem}h3{font-size:1.15rem}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px;border-radius:6px}
+.eyebrow{font-size:.75rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}.small{font-size:.85rem}
+.sample{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);background:var(--gold-soft);padding:2px 8px;border-radius:6px}
+.new{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--leaf-ink);background:var(--leaf-soft);padding:1px 6px;border-radius:6px;vertical-align:middle}
+
+/* ---- guscio ---- */
+.app{display:grid;grid-template-columns:var(--side) minmax(0,1fr);height:100%}
+nav.side{background:var(--surface);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:18px;height:100%;overflow-y:auto}
+.brand{display:flex;gap:10px;align-items:center;padding:0 6px}
+.brand b{display:none}
+.brand>svg{display:none}
+.brand .logo img{height:52px}
+.who{padding:10px;border-radius:12px;background:var(--leaf-soft);display:flex;flex-direction:column;gap:2px}
+.who b{line-height:1.2}
+.navgroup{display:flex;flex-direction:column;gap:2px}
+nav.side a{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:600;min-height:44px}
+nav.side a:hover{background:var(--leaf-soft)}
+nav.side a[aria-current="page"]{background:var(--sky-soft);color:var(--brand)}
+nav.side a svg{width:20px;height:20px;flex:none}
+.side-foot{margin-top:auto}
+main{height:100%;min-height:0;display:flex;flex-direction:column;padding-block:22px 18px;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));overflow:hidden}
+.wrap{max-width:1280px;width:100%;margin:0 auto;flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:14px}
+.head{flex:none;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:flex-end;justify-content:space-between}
+.head>div:first-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+.head p{color:var(--muted);max-width:70ch}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+/* corpo: assorbe lo spazio; scorre solo se lo schermo è troppo basso per i pannelli */
+.corpo{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:14px;overflow:auto}
+.fill{flex:1 1 auto;min-height:15rem;display:flex;flex-direction:column;overflow:hidden}
+.scroll{flex:1 1 0;min-height:0;overflow:auto}
+.cols{display:grid;grid-template-columns:var(--cols,minmax(0,1.6fr) minmax(280px,1fr));gap:14px;flex:1 1 auto;min-height:15rem}
+.cols>*{min-height:0;min-width:0}
+.pila{display:flex;flex-direction:column;gap:14px;min-height:0}
+.pila>.share{flex:1 1 0;min-height:7rem;display:flex;flex-direction:column}
+.capped{max-height:13rem;display:flex;flex-direction:column;flex:none}
+.capped>.scroll{flex:1 1 auto}
+/* fila sotto la tabella (Oggi della segreteria): pannelli affiancati, ognuno scorre da sé */
+.sotto{flex:1 1 auto;min-height:8rem;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sotto>.share{min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.head>.tools{flex-shrink:0;flex-wrap:nowrap}
+
+.btn{border:1px solid var(--line);background:var(--surface);padding:8px 16px;border-radius:10px;font-weight:600;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{border-color:var(--brand)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.btn.danger{color:var(--no);border-color:var(--no-soft)}
+.btn.danger:hover{background:var(--no-soft)}
+.btn.sm{min-height:36px;padding:4px 12px;font-size:.88rem}
+.link{background:none;border:0;color:var(--brand);font-weight:600;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);min-width:0}
+.panel-h{flex:none;display:flex;justify-content:space-between;align-items:center;gap:8px 12px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.panel-b{padding:14px 16px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:none}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;flex:none}
+.grid2>*,.grid3>*{min-width:0}
+.pill{font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap;display:inline-block}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}.pill.warn{background:var(--gold-soft);color:var(--gold)}
+.pill.no{background:var(--no-soft);color:var(--no)}.pill.info{background:var(--sky-soft);color:var(--brand)}
+.pill.leaf{background:var(--leaf-soft);color:var(--leaf-ink)}
+.empty{padding:28px 18px;text-align:center;color:var(--muted)}
+
+/* ---- DataTable (come CRM Decobrands: intestazione ferma, ordinamento, totali fermi, piede con pagine) ---- */
+.dt{display:flex;flex-direction:column;min-height:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.dt.fill{flex:1 1 auto;min-height:15rem}
+.dt-top{flex:none;display:flex;justify-content:space-between;align-items:center;gap:8px 12px;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.dt-cerca{border:1px solid var(--line);border-radius:10px;padding:6px 10px 6px 32px;min-height:38px;width:220px;max-width:100%;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%235B6B78' stroke-width='2'%3E%3Ccircle cx='7' cy='7' r='5'/%3E%3Cpath d='m11 11 4 4'/%3E%3C/svg%3E") no-repeat 10px center}
+.dt-scorri{flex:1 1 0;min-height:0;overflow:auto}
+.dt.naturale{flex:none}
+.dt.naturale .dt-scorri{flex:none;max-height:24rem}
+.dt table{width:100%;border-collapse:separate;border-spacing:0;font-size:.94rem}
+.dt th,.dt td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.dt th{position:sticky;top:0;z-index:1;background:var(--head-bg);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.dt th button{all:unset;cursor:pointer;user-select:none}
+.dt th button:hover{color:var(--ink)}
+.dt th button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.dt th .freccia{margin-left:4px;font-size:.7rem;opacity:.35}
+.dt th[aria-sort="ascending"] .freccia,.dt th[aria-sort="descending"] .freccia{opacity:1;color:var(--brand)}
+.dt .n{text-align:right;font-variant-numeric:tabular-nums}
+.dt tbody tr:last-child td{border-bottom:0}
+.dt tfoot td{position:sticky;bottom:0;background:var(--surface-2);font-weight:700;border-top:1px solid var(--line);border-bottom:0}
+.dt tr.go{cursor:pointer}
+.dt tr.go:hover td{background:var(--leaf-soft)}
+.dt-piede{flex:none;display:flex;justify-content:space-between;align-items:center;gap:8px 12px;padding:8px 14px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted);flex-wrap:wrap}
+.dt-pagine{display:flex;gap:4px;align-items:center}
+.dt-pagine button{min-width:36px;min-height:36px;border:1px solid var(--line);background:var(--surface);border-radius:8px;cursor:pointer;font-weight:600}
+.dt-pagine button[aria-current="page"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+.dt-pagine button:disabled{opacity:.4;cursor:not-allowed}
+
+/* ---- form ---- */
+.field{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--muted);font-weight:600;min-width:0}
+.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface);min-height:44px;color:var(--ink);font-weight:400;font-size:1rem;width:100%}
+.filters{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.filters .field{min-width:140px;flex:0 1 auto}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.formgrid .full{grid-column:1/-1}
+.radios{display:flex;gap:8px;flex-wrap:wrap}
+.radio{display:flex;gap:8px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:600;color:var(--ink);min-height:44px}
+.radio:has(input:checked){border-color:var(--brand);background:var(--sky-soft)}
+.radio.block{align-items:flex-start;flex:1;min-width:200px}
+.radio.block span{display:flex;flex-direction:column}
+.radio.block small{color:var(--muted);font-weight:400}
+.err{color:var(--no);font-size:.88rem;font-weight:600}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0;font-size:.94rem}
+dt{color:var(--muted)}dd{margin:0;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.secret{font-family:ui-monospace,Consolas,monospace;background:var(--paper);border:1px dashed var(--line);border-radius:8px;padding:3px 8px;font-size:.95rem}
+
+/* ---- persone e appello ---- */
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:600;font-size:1.05rem;color:#fff;flex:none}
+.av.sm{width:30px;height:30px;font-size:.85rem}
+.av.lg{width:56px;height:56px;font-size:1.4rem}
+.person{display:flex;gap:10px;align-items:center;min-width:0}
+.person b{display:block;line-height:1.2}
+.tally{flex:none;display:flex;gap:10px 22px;align-items:center;flex-wrap:wrap}
+.beads{display:flex;gap:4px;flex-wrap:wrap;max-width:340px}
+.bead{width:13px;height:13px;border-radius:50%;background:var(--line);transition:background .2s}
+.bead.p{background:var(--ok)}.bead.a{background:var(--no)}
+.stat b{font-family:var(--f-display);font-size:1.8rem;font-weight:600;display:block;line-height:1}
+.stat span{font-size:.85rem;color:var(--muted)}
+.kpi{padding:10px 16px;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:14px;align-items:center}
+.kpi b{font-size:2.3rem;grid-row:1/3}
+.kpi .eyebrow{align-self:end}.kpi>span:last-child{align-self:start}
+.kids{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;padding:14px}
+.kid{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s,background .2s}
+.kid[data-s="p"]{border-color:var(--ok);background:linear-gradient(var(--ok-soft),var(--surface) 70%)}
+.kid[data-s="a"]{border-color:var(--no);background:linear-gradient(var(--no-soft),var(--surface) 70%)}
+.chip{font-size:.74rem;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--gold-soft);color:var(--gold);align-self:flex-start;white-space:nowrap}
+.acts{display:grid;grid-template-columns:1fr 1fr auto;gap:6px}
+.t{border:1.5px solid var(--line);background:var(--surface);border-radius:10px;min-height:44px;font-weight:700;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px}
+.t[aria-pressed="true"].tp{background:var(--ok);border-color:var(--ok);color:#fff}
+.t[aria-pressed="true"].ta{background:var(--no);border-color:var(--no);color:#fff}
+.t[aria-pressed="true"].tl{background:var(--gold);border-color:var(--gold);color:#fff}
+.t:disabled{opacity:.35;cursor:not-allowed}
+.times{display:flex;gap:8px}
+.times .field{flex:1;font-size:.72rem}
+.times input{min-height:38px;padding:4px 8px;background:var(--paper)}
+.savebar{flex:none;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--ink);color:var(--paper);padding:8px 10px 8px 16px;border-radius:14px}
+.savebar .btn{background:transparent;color:var(--paper);border-color:rgb(255 255 255 / .25)}
+.savebar .btn.primary{background:var(--leaf);border-color:var(--leaf);color:#1C2B10}
+.savebar .btn.danger{color:#F6B4AE}
+.toast{position:fixed;left:50%;bottom:calc(24px + var(--navh) + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ok);color:#fff;padding:10px 18px;border-radius:10px;font-weight:700;box-shadow:var(--shadow);z-index:40;max-width:calc(100% - 32px)}
+.toast.bad{background:var(--no)}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);cursor:pointer;text-align:left;min-height:52px;width:100%}
+.prow[aria-pressed="true"]{border-color:var(--ok);background:var(--ok-soft)}
+.prow .tick{width:26px;height:26px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;flex:none;font-weight:700;color:#fff}
+.prow[aria-pressed="true"] .tick{background:var(--ok);border-color:var(--ok)}
+.monthnav{display:flex;align-items:center;gap:8px}
+.monthnav b{font-family:var(--f-display);font-size:1.25rem;min-width:140px;text-align:center;text-transform:capitalize}
+
+/* ---- landing e login (pagine pubbliche: qui lo scorrimento è della pagina intera, ma stanno in uno schermo) ---- */
+.logo{display:inline-flex;border-radius:12px;background:var(--logo-bg);padding:var(--logo-pad)}
+.logo img{display:block;width:auto;max-width:100%}
+.landing,.lg{height:100%;overflow:auto;position:relative;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.landing{display:flex;flex-direction:column;gap:24px;padding-block:18px 20px}
+.l-top,.l-hero,.l-who,.l-foot{max-width:1180px;width:100%;margin:0 auto}
+.l-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.l-hero{flex:1 0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:32px;align-items:center}
+.l-text{display:flex;flex-direction:column;gap:18px}
+.l-text h1{font-size:clamp(2.6rem,5.2vw,4.4rem);line-height:.98;letter-spacing:-.01em}
+.l-text h1 em{font-style:normal;color:var(--brand)}
+.l-text p{font-size:1.15rem;color:var(--muted);max-width:46ch}
+.btn.lg{min-height:52px;padding:10px 22px;font-size:1.05rem}
+.l-art{position:relative;aspect-ratio:1/1;max-width:440px;width:100%;justify-self:center}
+.l-leaves{position:absolute;inset:0;width:100%;height:100%}
+.l-card{position:absolute;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgb(20 50 77 / .12);padding:10px 14px;display:flex;flex-direction:column;min-width:170px}
+.l-card b{font-family:var(--f-display);font-size:1.6rem;font-weight:600;line-height:1.1}
+.l-card.c1{top:8%;left:-4%}.l-card.c2{top:42%;right:-6%}.l-card.c3{bottom:6%;left:8%}
+.l-card.c2 b{color:var(--gold)}.l-card.c1 b{color:var(--ok)}.l-card.c3 b{color:var(--brand)}
+.l-who{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;border-top:1px solid var(--line);padding-top:20px}
+.l-who-i{display:flex;gap:12px;align-items:flex-start}
+.l-who-i .ic{width:40px;height:40px;border-radius:12px;background:var(--leaf-soft);color:var(--leaf-ink);display:grid;place-items:center;flex:none}
+.l-who-i .ic svg{width:22px;height:22px}
+.l-foot{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.lg{display:grid;place-items:center;padding-block:24px;background:radial-gradient(circle at 85% 110%,var(--leaf-soft),transparent 55%),var(--paper)}
+.lg>.l-leaves{position:fixed;inset:auto -60px -60px auto;width:min(46vw,460px);height:auto;opacity:.5;pointer-events:none}
+.lg-box{position:relative;width:100%;max-width:440px;display:flex;flex-direction:column;gap:14px;align-items:stretch}
+.lg-logo{align-self:center}
+.lg-card{padding:22px;display:flex;flex-direction:column;gap:18px}
+.lg-card h1{font-size:1.9rem}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;background:var(--paper)}
+.seg button{border:0;background:none;padding:8px 10px;border-radius:9px;font-weight:600;cursor:pointer;min-height:40px;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--brand);box-shadow:var(--shadow)}
+.pw{display:flex;gap:6px}
+.pw input{flex:1;min-width:0}
+.lg-row{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.check{display:flex;gap:8px;align-items:center;font-size:.9rem;cursor:pointer;min-height:44px}
+.check input{width:18px;height:18px}
+.lg-demo .sample{align-self:flex-start}
+.lg-demo{padding:12px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:none;border-style:dashed}
+@media (max-width:900px){.l-hero{grid-template-columns:minmax(0,1fr)}.l-art{max-width:340px}.l-who{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.l-who{grid-template-columns:minmax(0,1fr)}.l-card{min-width:140px}.l-card.c1{left:0}.l-card.c2{right:0}.l-top .logo img{height:48px}}
+
+/* ---- procedura guidata ---- */
+.steps{flex:none;display:flex;gap:6px;flex-wrap:wrap;list-style:none;margin:0;padding:0;counter-reset:s}
+.steps li{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:.9rem;color:var(--muted)}
+.steps li::before{counter-increment:s;content:counter(s);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--line);color:var(--ink);font-size:.8rem}
+.steps li.done::before{content:"✓";background:var(--leaf);color:#1C2B10}
+.steps li.cur{border-color:var(--brand);color:var(--brand)}
+.steps li.cur::before{background:var(--brand);color:#fff}
+.checklist{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:22rem}
+.checklist label{display:flex;gap:12px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);cursor:pointer;min-height:48px}
+.checklist label:last-child{border-bottom:0}
+.checklist label:has(input:checked){background:var(--sky-soft)}
+.checklist input{width:20px;height:20px;flex:none}
+.checklist .dis{opacity:.5;cursor:not-allowed}
+.checklist label>span:last-child{display:flex;flex-direction:column;line-height:1.25}
+.foot{flex:none;display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+
+dialog{border:0;border-radius:16px;padding:0;max-width:min(760px,calc(100% - 24px));width:100%;max-height:calc(100% - 24px);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgb(0 0 0 / .3)}
+dialog[open]{display:flex;flex-direction:column}
+dialog::backdrop{background:rgb(15 26 35 / .5)}
+#dlg-in{display:flex;flex-direction:column;min-height:0;flex:1 1 auto}
+.dlg-h{flex:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.dlg-b{padding:16px 18px;display:flex;flex-direction:column;gap:14px;overflow:auto;flex:1 1 auto;min-height:0}
+.dlg-b .dt{box-shadow:none}
+
+/* ---- tablet: barra a icone ---- */
+@media (max-width:1100px) and (min-width:721px){
+  :root{--side:88px}
+  nav.side{padding:14px 8px;gap:12px}
+  .brand{justify-content:center;padding:0}.brand .logo,.who{display:none}.brand>svg{display:block}
+  nav.side a{flex-direction:column;gap:3px;font-size:.7rem;line-height:1.15;text-align:center;padding:8px 4px}
+  .roles{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:1000px) and (min-width:721px){
+  .cols{grid-template-columns:minmax(0,1fr)!important;grid-auto-rows:minmax(14rem,1fr)}
+}
+@media (max-width:860px){.grid2{grid-template-columns:minmax(0,1fr)}}
+/* ---- telefono: barra in basso; scorre solo il corpo (sotto il titolo), le tabelle hanno il loro scorrimento ---- */
+@media (max-width:720px){
+  :root{--navh:64px}
+  .app{grid-template-columns:minmax(0,1fr)}
+  nav.side{position:fixed;inset:auto 0 0 0;height:auto;flex-direction:row;padding:4px max(6px,env(safe-area-inset-left,0px)) calc(4px + env(safe-area-inset-bottom,0px));border-right:0;border-top:1px solid var(--line);z-index:15;overflow-x:auto;gap:0}
+  .brand,.who{display:none}
+  .navgroup{flex-direction:row;flex:1;justify-content:space-around}
+  .side-foot{margin:0;flex:none}
+  nav.side a{flex-direction:column;gap:2px;font-size:.68rem;padding:6px 8px;white-space:nowrap;min-height:52px;justify-content:center}
+  main{padding-block:14px calc(var(--navh) + 10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+  h1{font-size:1.6rem}
+  .head{align-items:flex-start}.head p{font-size:.92rem}
+  .head>.tools{flex-wrap:wrap;width:100%}
+  .fill,.dt.fill,.cols{flex:none;min-height:0}
+  .scroll{flex:none;overflow:visible}
+  .dt.fill .dt-scorri{flex:none;max-height:65vh}
+  .cols{grid-template-columns:minmax(0,1fr)!important}
+  .pila>.share{flex:none}
+  .sotto{flex:none;min-height:0;grid-template-columns:minmax(0,1fr)}
+  .capped{max-height:none}
+  .grid3{gap:8px}
+  .grid3 .panel-b{padding:10px}
+  .kpi b{font-size:1.7rem}.stat span{font-size:.78rem}
+  .roles,.formgrid{grid-template-columns:minmax(0,1fr)}
+  .kids{padding:0;grid-template-columns:minmax(0,1fr)}
+  .kids-panel{background:none;border:0;box-shadow:none}
+  .dt-cerca{width:100%}
+  .dt-top .tools{width:100%}
+  .filters .field{flex:1 1 140px}
+  .savebar{padding:8px}
+  .savebar>span:first-child{font-size:.9rem}
+}
+@media print{
+  html,body,#root,.app,main,.wrap,.corpo,.fill,.scroll,.dt,.dt-scorri,.cols{height:auto!important;max-height:none!important;overflow:visible!important;display:block}
+  nav.side,.tools,.savebar,.dt-piede,.dt-cerca{display:none!important}
+  .panel,.dt{box-shadow:none;margin-bottom:12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="root"></div>
+<dialog id="dlg"><div id="dlg-in"></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+// ponytail: prototipo in un solo file, stato in memoria, nessun backend. Serve a validare i flussi, non è il codice di produzione.
+"use strict";
+const TODAY='2026-11-11';
+const COLORS=['#0F72B9','#4C7420','#B07A0E','#7A5BA6','#B4413A','#2E7D7A','#5B6B78','#A3601F'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fd=iso=>iso?iso.split('-').reverse().join('/'):'';
+const longDate=iso=>new Date(iso+'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const dayName=iso=>new Date(iso+'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'short'});
+const monthLabel=ym=>new Date(ym+'-15T12:00').toLocaleDateString('it-IT',{month:'long',year:'numeric'});
+const addMonth=(ym,n)=>{const d=new Date(ym+'-15T12:00');d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,7)};
+function weekdays(from,to){const out=[];const d=new Date(from+'T12:00'),e=new Date(to+'T12:00');while(d<=e){const w=d.getDay();if(w>0&&w<6)out.push(d.toISOString().slice(0,10));d.setDate(d.getDate()+1)}return out}
+function rng(seed){let x=seed%2147483647;if(x<=0)x+=2147483646;return()=>(x=x*16807%2147483647)/2147483647}
+const age=b=>{const t=new Date(TODAY),d=new Date(b);let a=t.getFullYear()-d.getFullYear();if(t<new Date(t.getFullYear(),d.getMonth(),d.getDate()))a--;return a};
+let nid=1000;const newId=()=>++nid;
+
+/* ---------------- dati di esempio (inventati) ---------------- */
+const S={years:[],classes:[],students:[],enroll:[],rolls:{},pm:{},users:[],role:null,ui:{}};
+(function seed(){
+  const r=rng(42);
+  S.years=[{id:1,name:'2025/26',current:false,pmPass:'pomeriggio-25'},{id:2,name:'2026/27',current:true,pmPass:'sole-pomeriggio-26'}];
+  S.classes=[
+    {id:11,yearId:1,name:'Girasoli',level:'cdb',pass:'girasole-25'},{id:12,yearId:1,name:'Lavande',level:'cdb',pass:'lavanda-25'},{id:13,yearId:1,name:'Primaria',level:'pri',pass:'primaria-25'},
+    {id:21,yearId:2,name:'Girasoli',level:'cdb',pass:'girasole-48'},{id:22,yearId:2,name:'Lavande',level:'cdb',pass:'lavanda-17'},
+    {id:23,yearId:2,name:'Primaria 1–3',level:'pri',pass:'quercia-62'},{id:24,yearId:2,name:'Primaria 4–5',level:'pri',pass:'castagno-09'}];
+  const N=[['Alma','Ferrante','F'],['Oliver','Brambilla','M'],['Bianca','Rossetti','F'],['Noah','Galli','M'],['Sofia','Merloni','F'],['Ethan','Colombo','M'],['Viola','Testa','F'],['Leo','Marchetti','M'],['Mia','Fontana','F'],
+   ['Tommaso','Riva','M'],['Grace','Bellini','F'],['Pietro','Sala','M'],['Emma','Conti','F'],['Samuel','Greco','M'],['Ada','Villa','F'],['Lucas','Moretti','M'],['Irene','Pozzi','F'],['Jacob','Longo','M'],
+   ['Matilde','Ruggeri','F'],['Henry','Caprioli','M'],['Lavinia','Orsi','F'],['Diego','Martelli','M'],['Ginevra','Pace','F'],['Arthur','Benassi','M'],['Nina','Cattaneo','F'],['Filippo','Donati','M'],
+   ['Chloe','Zanetti','F'],['Riccardo','Ferri','M'],['Zoe','Barbieri','F'],['Elia','Monti','M'],['Lucia','Neri','F'],['Max','Gatti','M'],['Anna','Serra','F'],['Theo','Lombardi','M'],['Olivia','Valli','F']];
+  const DIETS=['','','','','','','Senza glutine','Vegetariana','Senza lattosio','Allergia frutta a guscio'];
+  const plan=[...Array(9).fill([21,3,6]),...Array(9).fill([22,3,6]),...Array(8).fill([23,6,9]),...Array(6).fill([24,9,11]),[0,3,4],[0,3,4],[0,6,7]];
+  N.forEach((n,i)=>{const [cl,a0,a1]=plan[i];const y=2026-(a0+Math.floor(r()*(a1-a0)))-1;const m=1+Math.floor(r()*12),d=1+Math.floor(r()*28);
+    const birth=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const st={id:100+i,first:n[0],last:n[1],sex:n[2],birth,birthPlace:'Milano',nat:i%4===1?'Regno Unito':'Italiana',cf:(n[1].slice(0,3)+n[0].slice(0,3)).toUpperCase()+String(y).slice(2)+'A01F205'+String.fromCharCode(65+i%26),
+      address:`Via Esempio ${i+3}, Milano`,mName:'Madre di '+n[0],mPhone:'333 000 '+String(1000+i*7),mEmail:`madre.${n[1].toLowerCase()}@esempio.it`,
+      fName:'Padre di '+n[0],fPhone:'347 000 '+String(2000+i*7),fEmail:`padre.${n[1].toLowerCase()}@esempio.it`,bank:'',note:'',diet:DIETS[Math.floor(r()*DIETS.length)],deleted:false};
+    S.students.push(st);
+    if(cl){S.enroll.push({classId:cl,studentId:st.id});const old={21:11,22:12,23:13,24:13}[cl];if(age(birth)>3)S.enroll.push({classId:old,studentId:st.id})}
+  });
+  S.users=[
+    {id:1,name:'Direzione',email:'direzione@esempio.it',role:'admin',classIds:[]},
+    {id:2,name:'Paola',email:'segreteria@esempio.it',role:'segreteria',classIds:[]},
+    {id:3,name:'Ms. Hannah',email:'hannah@esempio.it',role:'insegnante',classIds:[21]},
+    {id:4,name:'Maestra Elena',email:'elena@esempio.it',role:'insegnante',classIds:[21]},
+    {id:5,name:'Mr. Owen',email:'owen@esempio.it',role:'insegnante',classIds:[22]},
+    {id:6,name:'Maestra Giulia',email:'giulia@esempio.it',role:'insegnante',classIds:[23]},
+    {id:7,name:'Mr. Daniel',email:'daniel@esempio.it',role:'insegnante',classIds:[24]},
+    {id:8,name:'Andrea',email:'pomeriggio@esempio.it',role:'pomeriggio',classIds:[]}];
+  const days=weekdays('2026-09-14','2026-11-10');
+  for(const c of S.classes.filter(c=>c.yearId===2)){
+    for(const d of [...days,TODAY]){if(d===TODAY&&(c.id===21||c.id===23))continue;
+      const rows={};for(const s of studentsOf(c.id)){const v=r();const p=v>.08;
+        rows[s.id]={s:p?'p':'a',lunch:p&&r()<.86,in:p&&r()<.04?'09:45':'',out:p&&r()<.05?'13:00':''}}
+      S.rolls[c.id+'|'+d]={saved:'09:0'+Math.floor(r()*10),by:teacherOf(c.id),rows}}}
+  for(const d of days){const ids=yearStudents(2).filter(()=>r()<.35).map(s=>s.id);S.pm['2|'+d]={saved:'16:2'+Math.floor(r()*10),ids}}
+})();
+
+/* ---------------- query ---------------- */
+function yearCur(){return S.years.find(y=>y.current)}
+function yearOf(id){return S.years.find(y=>y.id===id)}
+function cls(id){return S.classes.find(c=>c.id===id)}
+function stu(id){return S.students.find(s=>s.id===id)}
+function classesOf(yearId){return S.classes.filter(c=>c.yearId===yearId)}
+function byName(a,b){return (a.last+a.first).localeCompare(b.last+b.first)}
+function studentsOf(classId){return S.enroll.filter(e=>e.classId===classId).map(e=>stu(e.studentId)).filter(s=>s&&!s.deleted).sort(byName)}
+function yearStudents(yearId){return classesOf(yearId).flatMap(c=>studentsOf(c.id)).sort(byName)}
+function classOfStudent(sid,yearId){return classesOf(yearId).find(c=>S.enroll.some(e=>e.classId===c.id&&e.studentId===sid))}
+function notAssigned(yearId){return S.students.filter(s=>!s.deleted&&!classOfStudent(s.id,yearId)).sort(byName)}
+function teacherOf(classId){return S.users.filter(u=>u.classIds.includes(classId)).map(u=>u.name).join(', ')||'—'}
+function rollsOfClass(classId){return Object.entries(S.rolls).filter(([k])=>k.startsWith(classId+'|')).map(([k,v])=>({date:k.split('|')[1],...v}))}
+function sumRoll(rows){const v=Object.values(rows);return{p:v.filter(x=>x.s==='p').length,a:v.filter(x=>x.s==='a').length,l:v.filter(x=>x.lunch).length,io:v.filter(x=>x.in||x.out).length}}
+const fullName=s=>s?`${s.last} ${s.first}`:'(studente eliminato)';
+const avatar=(s,sz)=>`<span class="av ${sz===1?'sm':sz||''}" style="background:${COLORS[s.id%COLORS.length]}" aria-hidden="true">${esc(s.first[0]+s.last[0])}</span>`;
+const personCell=s=>`<div class="person">${s?avatar(s,1):''}<b>${esc(fullName(s))}</b></div>`;
+const levelLabel=l=>l==='cdb'?'Casa dei Bambini · 3–6':'Primaria · 6–11';
+
+/* =========================================================
+   DataTable — come quella del CRM Decobrands:
+   intestazione ferma, colonne ordinabili (▲▼), ricerca, totali fermi in fondo, piede con conteggio e pagine.
+   Ordinamento, ricerca e totali valgono su tutte le righe; la pagina ne mostra una fetta.
+   col: {k, h, v:r=>valore (ordina/cerca/mostra), cell?:r=>html, num?, total?, sort:false?}
+   ========================================================= */
+function dt(o){
+  const all=S.ui.dt||(S.ui.dt={});const st=all[o.id]||(all[o.id]={sort:o.sort||null,page:0,q:''});
+  let rows=o.rows;
+  if(o.search&&st.q){const q=st.q.toLowerCase();rows=rows.filter(r=>o.cols.some(c=>String(c.v?c.v(r)??'':'').toLowerCase().includes(q)))}
+  const sc=st.sort&&o.cols.find(c=>c.k===st.sort.k);
+  if(sc){const f=r=>{const x=(sc.s||sc.v)(r);return x==null||x===''?(sc.num?-1:''):typeof x==='number'?x:String(x).toLowerCase()};
+    rows=[...rows].sort((a,b)=>{const x=f(a),y=f(b);return (x<y?-1:x>y?1:0)*(st.sort.dir==='asc'?1:-1)})}
+  const pp=o.perPage||25,pages=Math.max(1,Math.ceil(rows.length/pp)),p=Math.min(st.page,pages-1),slice=rows.slice(p*pp,(p+1)*pp);
+  const show=(c,r)=>{if(c.cell)return c.cell(r);const x=c.v(r);return x==null||x===''?'<span class="muted">—</span>':esc(x)};
+  const th=c=>{const ord=!o.static&&c.sort!==false,on=st.sort?.k===c.k;
+    return `<th class="${c.num?'n':''}" ${ord?`aria-sort="${on?(st.sort.dir==='asc'?'ascending':'descending'):'none'}"`:''}>${ord?`<button type="button" data-action="dt-sort" data-id="${o.id}" data-k="${c.k}">${c.h}<span class="freccia" aria-hidden="true">${on?(st.sort.dir==='asc'?'▲':'▼'):'⇅'}</span></button>`:c.h}</th>`};
+  const unit=rows.length===1?(o.unit1||'elemento'):(o.unit||'elementi');
+  const nav=()=>{const n=[];for(let i=0;i<pages;i++)if(i===0||i===pages-1||Math.abs(i-p)<=1)n.push(i);else if(n[n.length-1]!=='…')n.push('…');
+    const b=(i,t,lab,dis,cur)=>`<button type="button" data-action="dt-page" data-id="${o.id}" data-p="${i}" aria-label="${lab}" ${dis?'disabled':''} ${cur?'aria-current="page"':''}>${t}</button>`;
+    return `<nav class="dt-pagine" aria-label="Pagine">${b(p-1,'‹','Pagina precedente',p===0)}${n.map(i=>i==='…'?'<span>…</span>':b(i,i+1,'Pagina '+(i+1),false,i===p)).join('')}${b(p+1,'›','Pagina successiva',p===pages-1)}</nav>`};
+  const top=o.title||o.search||o.tools?`<div class="dt-top">${o.title?`<h2>${o.title}</h2>`:'<span></span>'}<div class="tools">${o.tools||''}${o.search?`<input type="search" class="dt-cerca" id="dt-q-${o.id}" data-input="dt" data-id="${o.id}" value="${esc(st.q)}" placeholder="${o.searchLabel||'Cerca'}" aria-label="${o.searchLabel||'Cerca'}">`:''}</div></div>`:'';
+  return `<div class="dt ${o.naturale?'naturale':'fill'}">${top}
+   <div class="dt-scorri" data-keep="dt-${o.id}">${rows.length?`<table><thead><tr>${o.cols.map(th).join('')}</tr></thead>
+    <tbody>${slice.map(r=>`<tr ${o.rowAttr?o.rowAttr(r):''}>${o.cols.map(c=>`<td class="${c.num?'n':''}">${show(c,r)}</td>`).join('')}</tr>`).join('')}</tbody>
+    ${o.foot?`<tfoot><tr>${o.cols.map((c,i)=>`<td class="${c.num?'n':''}">${i===0?'Totale':c.total?rows.reduce((a,r)=>a+(+c.v(r)||0),0):''}</td>`).join('')}</tr></tfoot>`:''}</table>`
+    :`<div class="empty">${st.q?`Nessun risultato per “${esc(st.q)}”.`:o.empty||'Nessun elemento.'}</div>`}</div>
+   ${o.static?'':`<div class="dt-piede"><span>${pages>1?`${p*pp+1}–${p*pp+slice.length} di `:''}${rows.length} ${unit}</span>${pages>1?nav():''}${o.note?`<span>${o.note}</span>`:''}</div>`}</div>`;
+}
+
+/* ---------------- profili ---------------- */
+const IC={
+  roll:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="m16 11 2 2 4-4"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>',
+  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2"/></svg>',
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v16H6a2 2 0 0 0-2 2.5Z"/><path d="M8 7h8M8 11h6"/></svg>',
+  kids:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5M16 14.5c2.6 0 4.7 1.6 5.5 4.5"/></svg>',
+  chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+  year:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22V12M12 12C9 9 5 9 3 10c1 3 5 4 9 2ZM12 12c3-3 7-3 9-2-1 3-5 4-9 2ZM12 12c-1-4 0-8 0-9 1 1 2 5 0 9Z"/></svg>',
+  classes:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 10 12 5l9 5-9 5-9-5Z"/><path d="M7 12v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/></svg>',
+  key:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M15 8l2 2"/></svg>',
+  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg>',
+  fork:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 2v20M4 2v6a3 3 0 0 0 6 0V2M17 22V2c-2 1-3 4-3 8h3"/></svg>'};
+const ROLES={
+  insegnante:{label:'Classe',who:'Ms. Hannah · Girasoli',color:'var(--ok-soft)',ic:IC.roll,classId:21,
+    desc:'Le insegnanti fanno l’appello della propria classe e consultano lo storico.',old:'Prima: nome classe + password condivisa',
+    nav:[['oggi','Appello',IC.roll],['appelli','Storico',IC.cal]],sub:['giorno']},
+  pomeriggio:{label:'Pomeriggio',who:'Andrea · Classe pomeridiana',color:'var(--gold-soft)',ic:IC.sun,
+    desc:'Appello del pomeriggio su tutti i bambini dell’anno in corso.',old:'Prima: nome anno + password pomeridiana',
+    nav:[['pm-oggi','Appello',IC.sun],['pm-appelli','Storico',IC.cal]],sub:['pm-giorno']},
+  segreteria:{label:'Segreteria',who:'Paola · Segreteria',color:'var(--sky-soft)',ic:IC.book,
+    desc:'Sintesi della giornata, registri, anagrafica e report.',old:'Prima: dentro l’amministrazione',
+    nav:[['dashboard','Oggi',IC.home],['registri','Registri',IC.book],['studenti','Studenti',IC.kids],['report','Report',IC.chart]],sub:['registro','registro-pm','studente']},
+  admin:{label:'Amministratore',who:'Direzione · Amministratore',color:'var(--leaf-soft)',ic:IC.key,
+    desc:'Prepara l’anno: anni scolastici, classi, iscrizioni alle classi e accessi.',old:'Prima: unico utente con tutto',
+    nav:[['anni','Anni',IC.year],['classi','Classi',IC.classes],['accessi','Accessi',IC.key]],sub:['classe','nuova-classe']},
+};
+
+/* ---------------- UI di base ---------------- */
+function toast(msg,bad){const el=document.getElementById('toast');el.textContent=msg;el.className='toast'+(bad?' bad':'');el.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>el.hidden=true,2600)}
+const dlg=document.getElementById('dlg');
+function openDlg(title,body,foot){document.getElementById('dlg-in').innerHTML=`<div class="dlg-h"><h2>${title}</h2><button class="btn sm" data-action="close" aria-label="Chiudi">✕</button></div><div class="dlg-b">${body}</div>${foot?`<div class="foot">${foot}</div>`:''}`;if(!dlg.open)dlg.showModal()}
+function closeDlg(){if(dlg.open)dlg.close()}
+function ask(title,text,okLabel,fn){S.ui.pending=fn;openDlg(title,`<p>${text}</p>`,`<button class="btn" data-action="close">Annulla</button><button class="btn primary" data-action="confirm-ok">${okLabel}</button>`)}
+function head(eyebrow,title,sub,tools=''){return `<div class="head"><div><span class="eyebrow">${eyebrow}</span><h1>${title}</h1>${sub?`<p>${sub}</p>`:''}</div>${tools?`<div class="tools">${tools}</div>`:''}</div>`}
+const corpo=html=>`<div class="corpo" data-keep="corpo">${html}</div>`;
+function go(h){if(location.hash===h)render(true);else location.hash=h}
+
+/* ---------------- login ---------------- */
+/* ---------------- landing e login ---------------- */
+const LEAVES=`<svg class="l-leaves" viewBox="0 0 400 400" aria-hidden="true"><g fill="var(--leaf)"><path d="M200 390C170 300 80 240 20 220c90 0 160 60 180 170Z"/><path d="M200 390C185 250 130 120 85 50c80 70 125 190 115 340Z" opacity=".85"/><path d="M200 390c0-150 40-270 105-350-20 105-50 230-105 350Z"/><path d="M200 390c40-100 105-160 190-180-65 40-130 100-190 180Z" opacity=".85"/></g></svg>`;
+const logo=h=>`<span class="logo"><img src="logo-montessori.png" alt="Scuola Montessori Bilingue di Milano" height="${h}"></span>`;
+function vLanding(){
+  return `<div class="landing">
+   <header class="l-top">${logo(64)}<a class="btn primary" href="#login">Accedi</a></header>
+   <section class="l-hero">
+    <div class="l-text">
+     <span class="eyebrow">Portale riservato al personale</span>
+     <h1>La giornata della scuola, <em>in un posto solo</em>.</h1>
+     <p>Appello del mattino e del pomeriggio, pranzi, entrate e uscite, registri e report della Casa dei Bambini e della Primaria.</p>
+     <div class="tools"><a class="btn primary lg" href="#login">Accedi al portale</a><a class="btn lg" href="#login" data-action="login-tab" data-tab="tablet">Accesso dal tablet di classe</a></div>
+    </div>
+    <div class="l-art">${LEAVES}
+     <div class="l-card c1"><span class="eyebrow">Girasoli · oggi</span><b>9/9 presenti</b><span class="small muted">9 pranzi · 1 senza glutine</span></div>
+     <div class="l-card c2"><span class="eyebrow">Cucina · 10:00</span><b>52 pasti</b><span class="small muted">4 diete speciali</span></div>
+     <div class="l-card c3"><span class="eyebrow">Pomeriggio</span><b>23 bambini</b><span class="small muted">appello alle 16:20</span></div>
+    </div>
+   </section>
+   <section class="l-who">
+    ${[['Insegnanti','Appello della classe in tre tocchi dal tablet, con pranzi, entrate e uscite.',IC.roll],
+       ['Pomeriggio','Un appello unico per i bambini che restano dopo le 16.',IC.sun],
+       ['Segreteria','La sintesi della giornata entro le 10, i registri e i report mensili.',IC.book],
+       ['Direzione','Anni scolastici, classi, iscrizioni e accessi del personale.',IC.key]]
+      .map(([t,d,ic])=>`<div class="l-who-i"><span class="ic">${ic}</span><div><h3>${t}</h3><p class="small muted">${d}</p></div></div>`).join('')}
+   </section>
+   <footer class="l-foot"><span>Scuola Montessori Bilingue di Milano · Via Palmieri 72/4, 20141 Milano</span>
+    <span>I dati di bambini e famiglie restano sul server della scuola.</span></footer>
+  </div>`;
+}
+function vLogin(){
+  const tab=S.ui.ltab||'staff',e=S.ui.lerr||'';
+  const y=yearCur();
+  return `<div class="lg">${LEAVES}
+   <div class="lg-box">
+    <a href="#" class="lg-logo" aria-label="Torna alla pagina iniziale">${logo(76)}</a>
+    <div class="panel lg-card">
+     <div class="seg" role="tablist" aria-label="Tipo di accesso">
+      <button role="tab" aria-selected="${tab==='staff'}" data-action="login-tab" data-tab="staff">Personale</button>
+      <button role="tab" aria-selected="${tab==='tablet'}" data-action="login-tab" data-tab="tablet">Tablet di classe</button></div>
+     ${tab==='staff'?`<form data-form="login-staff" class="stack" id="lg-form" novalidate>
+       <div><h1>Accedi</h1><p class="muted small">Con l’email e la password che ti ha dato la direzione.</p></div>
+       <label class="field" for="lg-email">Email<input id="lg-email" name="email" type="email" autocomplete="username" required value="${esc(S.ui.lemail||'')}"></label>
+       <label class="field" for="lg-pw">Password<span class="pw"><input id="lg-pw" name="pw" type="password" autocomplete="current-password" required><button type="button" class="btn sm" data-action="pw-toggle" aria-label="Mostra password">Mostra</button></span></label>
+       <div class="lg-row"><label class="check" for="lg-rem"><input type="checkbox" id="lg-rem" name="rem"> Ricordami su questo dispositivo</label><button type="button" class="link small" data-action="forgot">Password dimenticata?</button></div>
+       ${e?`<p class="err" role="alert">${esc(e)}</p>`:''}
+       <button class="btn primary">Accedi</button></form>`
+     :`<form data-form="login-tablet" class="stack" id="lg-form" novalidate>
+       <div><h1>Tablet di classe</h1><p class="muted small">Per il tablet che resta in aula: si entra solo nell’appello della classe, anno ${esc(y.name)}.</p></div>
+       <label class="field" for="lg-cls">Classe<select id="lg-cls" name="cls">${classesOf(y.id).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></label>
+       <label class="field" for="lg-cpw">Password della classe<span class="pw"><input id="lg-cpw" name="pw" type="password" required><button type="button" class="btn sm" data-action="pw-toggle" aria-label="Mostra password">Mostra</button></span></label>
+       ${e?`<p class="err" role="alert">${esc(e)}</p>`:''}
+       <button class="btn primary">Entra nell’appello</button></form>`}
+    </div>
+    <div class="panel lg-demo"><span class="sample">Prototipo · accessi di prova</span>
+     ${tab==='staff'?`<p class="small muted">Password per tutti: <span class="secret">montessori</span></p>
+      <div class="tools">${[['Insegnante','hannah@esempio.it'],['Pomeriggio','pomeriggio@esempio.it'],['Segreteria','segreteria@esempio.it'],['Direzione','direzione@esempio.it']]
+        .map(([l,m])=>`<button type="button" class="btn sm" data-action="demo" data-email="${m}">${l}</button>`).join('')}</div>`
+      :`<p class="small muted">Girasoli: <span class="secret">girasole-48</span> · Lavande: <span class="secret">lavanda-17</span></p>`}
+    </div>
+   </div></div>`;
+}
+function enter(role,who,classId){S.role=role;if(classId)ROLES.insegnante.classId=classId;ROLES[role].who=who;S.ui={};location.hash='#'+ROLES[role].nav[0][0]}
+function shell(view,content){
+  const r=ROLES[S.role];
+  const navKey=r.nav.find(n=>n[0]===view)?view:({giorno:'appelli','pm-giorno':'pm-appelli',registro:'registri','registro-pm':'registri',studente:'studenti',classe:'classi','nuova-classe':'classi'}[view]);
+  return `<div class="app"><nav class="side" aria-label="Sezioni">
+   <div class="brand"><svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 38C16 26 6 20 2 18c8 0 15 6 18 20Z" fill="#B2D17A"/><path d="M20 38C18 22 12 10 8 4c8 6 13 18 12 34Z" fill="#B2D17A"/><path d="M20 38c0-14 4-26 10-34-2 10-5 22-10 34Z" fill="#B2D17A"/><path d="M20 38c4-10 10-16 18-18-6 4-12 10-18 18Z" fill="#B2D17A"/></svg><b>Montessori<br>Bilingue</b>${logo(52)}</div>
+   <div class="who"><span class="eyebrow">${r.label}</span><b>${esc(r.who)}</b><span class="small muted">Anno ${esc(yearCur()?.name||'—')}</span></div>
+   <div class="navgroup">${r.nav.map(n=>`<a href="#${n[0]}" ${n[0]===navKey?'aria-current="page"':''}>${n[2]}<span>${n[1]}</span></a>`).join('')}</div>
+   <div class="side-foot navgroup"><a href="#" data-action="logout">${IC.out}<span>Esci</span></a></div>
+  </nav><main><div class="wrap">${content}</div></main></div>`;
+}
+
+/* =========================================================
+   APPELLO (classe e segreteria)
+   ========================================================= */
+function draftFor(classId,date){
+  const k=classId+'|'+date;
+  if(!S.ui.draft||S.ui.draft.k!==k){const ex=S.rolls[k];const rows={};
+    for(const s of studentsOf(classId))rows[s.id]=ex?.rows[s.id]?{...ex.rows[s.id]}:{s:'',lunch:false,in:'',out:''};
+    S.ui.draft={k,classId,date,rows,exists:!!ex}}
+  return S.ui.draft;
+}
+function kidCard(s,row){
+  const P=row.s==='p';
+  return `<article class="kid" data-s="${row.s}">
+   <div class="person">${avatar(s)}<div><b>${esc(s.first)} ${esc(s.last)}</b><span class="small muted">${age(s.birth)} anni</span></div></div>
+   ${s.diet?`<span class="chip">${esc(s.diet)}</span>`:''}
+   <div class="acts">
+    <button class="t tp" data-action="mark" data-sid="${s.id}" data-v="p" aria-pressed="${P}">Presente</button>
+    <button class="t ta" data-action="mark" data-sid="${s.id}" data-v="a" aria-pressed="${row.s==='a'}">Assente</button>
+    <button class="t tl" data-action="mark" data-sid="${s.id}" data-v="l" aria-pressed="${row.lunch}" ${P?'':'disabled'} aria-label="Pranzo" title="Pranzo">${IC.fork}</button>
+   </div>
+   ${P?`<div class="times">
+    <label class="field">Entrata in ritardo<input type="time" id="in-${s.id}" data-change="time" data-sid="${s.id}" data-f="in" value="${row.in}"></label>
+    <label class="field">Uscita anticipata<input type="time" id="out-${s.id}" data-change="time" data-sid="${s.id}" data-f="out" value="${row.out}"></label></div>`:''}
+  </article>`;
+}
+function rollEditor(d,{canDelete}){
+  const list=studentsOf(d.classId);const v=list.map(s=>d.rows[s.id]);
+  const p=v.filter(x=>x.s==='p').length,a=v.filter(x=>x.s==='a').length,l=v.filter(x=>x.lunch).length,left=list.length-p-a;
+  if(!list.length)return corpo(`<div class="panel empty">Nessun bambino iscritto a questa classe. L’amministratore li aggiunge da Classi.</div>`);
+  return corpo(`<div class="panel panel-b tally">
+    <div class="beads" aria-hidden="true">${v.map(x=>`<span class="bead ${x.s}"></span>`).join('')}</div>
+    <div class="stat"><b class="num">${p}/${list.length}</b><span>presenti</span></div>
+    <div class="stat"><b class="num">${a}</b><span>assenti</span></div>
+    <div class="stat"><b class="num">${l}</b><span>pranzi</span></div>
+    <div class="stat"><b class="num">${left}</b><span>da segnare</span></div></div>
+   <div class="panel fill kids-panel"><div class="scroll" data-keep="kids"><div class="kids">${list.map(s=>kidCard(s,d.rows[s.id])).join('')}</div></div></div>`)+
+   `<div class="savebar"><span>${left?`Mancano ${left} da segnare`:`Tutti segnati · ${p} presenti, ${l} pranzi`}</span>
+    <span class="tools">
+     ${canDelete&&d.exists?`<button class="btn danger" data-action="roll-delete">Elimina</button>`:''}
+     <button class="btn" data-action="roll-cancel">Annulla</button>
+     <button class="btn primary" data-action="roll-save" ${left?'disabled':''}>${d.exists?'Salva modifiche':'Salva registro'}</button></span></div>`;
+}
+function rollTable(roll){
+  return dt({id:'roll',unit:'bambini',unit1:'bambino',sort:{k:'n',dir:'asc'},search:true,searchLabel:'Cerca bambino',
+    rows:Object.entries(roll.rows).map(([sid,r])=>({s:stu(+sid),r})),
+    cols:[{k:'n',h:'Studente',v:x=>fullName(x.s),cell:x=>personCell(x.s)},
+      {k:'p',h:'Presenza',v:x=>x.r.s==='p'?'Presente':'Assente',cell:x=>x.r.s==='p'?'<span class="pill ok">Presente</span>':'<span class="pill no">Assente</span>'},
+      {k:'l',h:'Pranzo',v:x=>x.r.lunch?'Pranzo':'',cell:x=>x.r.lunch?'<span class="pill warn">Pranzo</span>':'<span class="muted">—</span>'},
+      {k:'in',h:'Entrata in ritardo',v:x=>x.r.in},{k:'out',h:'Uscita anticipata',v:x=>x.r.out}]});
+}
+
+/* ---------------- CLASSE ---------------- */
+function vOggi(){
+  const c=cls(ROLES.insegnante.classId),k=c.id+'|'+TODAY,roll=S.rolls[k];
+  if(roll&&!S.ui.editToday){const s=sumRoll(roll.rows);
+    return head(`${esc(c.name)} · ${longDate(TODAY)}`,'Appello di oggi',`Salvato alle ${roll.saved} da ${esc(roll.by)}. ${s.p} presenti, ${s.a} assenti, ${s.l} pranzi.`,
+      `<button class="btn" data-action="edit-today">Correggi l’appello</button>`)+corpo(rollTable(roll));}
+  return head(`${esc(c.name)} · ${longDate(TODAY)}`,'Appello di oggi','Presente attiva anche il pranzo; la forchetta lo toglie. Si salva quando sono segnati tutti.','<span class="sample">Dati di esempio</span>')
+    +rollEditor(draftFor(c.id,TODAY),{canDelete:false});
+}
+function monthPicker(){const m=S.ui.month||(S.ui.month=TODAY.slice(0,7));
+  return `<div class="monthnav"><button class="btn sm" data-action="month" data-n="-1" aria-label="Mese precedente">‹</button><b>${monthLabel(m)}</b><button class="btn sm" data-action="month" data-n="1" aria-label="Mese successivo">›</button></div>`}
+const dayCol={k:'d',h:'Giorno',v:r=>r.date,cell:r=>`<b style="text-transform:capitalize">${dayName(r.date)}</b>`};
+function vAppelli(){
+  const c=cls(ROLES.insegnante.classId),m=S.ui.month||(S.ui.month=TODAY.slice(0,7));
+  const rows=rollsOfClass(c.id).filter(r=>r.date.startsWith(m)).map(r=>({...r,...sumRoll(r.rows)}));
+  return head(esc(c.name),'Appelli della classe','',monthPicker())+corpo(dt({id:'appelli',unit:'appelli',unit1:'appello',sort:{k:'d',dir:'desc'},foot:true,empty:`Nessun appello in ${monthLabel(m)}.`,
+    rows,rowAttr:r=>`class="go" data-action="go" data-to="#giorno/${r.date}"`,
+    cols:[dayCol,{k:'p',h:'Presenti',v:r=>r.p,num:1,total:1},{k:'a',h:'Assenti',v:r=>r.a,num:1,total:1},{k:'l',h:'Pranzi',v:r=>r.l,num:1,total:1},{k:'io',h:'Entrate/uscite',v:r=>r.io,num:1,total:1},{k:'by',h:'Salvato',v:r=>`${r.saved} · ${r.by}`}]}));
+}
+function vGiorno(date){
+  const c=cls(ROLES.insegnante.classId),roll=S.rolls[c.id+'|'+date];
+  if(!roll)return head(esc(c.name),'Appello non trovato','',`<a class="btn" href="#appelli">Indietro</a>`);
+  return head(esc(c.name),`Appello del ${fd(date)}`,`Salvato alle ${roll.saved} da ${esc(roll.by)}.`,`<a class="btn" href="#appelli">Indietro</a>`)+corpo(rollTable(roll));
+}
+
+/* ---------------- POMERIGGIO ---------------- */
+function pmEditor(yearId,date,{canDelete}){
+  const k=yearId+'|'+date;
+  if(!S.ui.pmDraft||S.ui.pmDraft.k!==k)S.ui.pmDraft={k,ids:new Set(S.pm[k]?.ids||[]),exists:!!S.pm[k]};
+  const d=S.ui.pmDraft;const groups=classesOf(yearId).map(c=>[c,studentsOf(c.id)]).filter(g=>g[1].length);
+  return corpo(`<div class="panel panel-b tally"><div class="stat"><b class="num">${d.ids.size}</b><span>presenti al pomeriggio</span></div>
+    <div class="stat"><b class="num">${yearStudents(yearId).length}</b><span>bambini dell’anno</span></div>
+    <span class="small muted" style="flex:1;min-width:200px">Tocca chi è presente. Si salvano solo i presenti, come nel portale attuale.</span></div>
+   <div class="panel fill kids-panel"><div class="scroll" data-keep="pm"><div class="kids" style="display:flex;flex-direction:column;gap:18px">
+   ${groups.map(([c,list])=>`<section class="stack"><h3>${esc(c.name)} <span class="muted small">${list.filter(s=>d.ids.has(s.id)).length}/${list.length}</span></h3>
+    <div class="plist">${list.map(s=>`<button class="prow" data-action="pm-toggle" data-sid="${s.id}" aria-pressed="${d.ids.has(s.id)}">
+     <span class="person">${avatar(s,1)}<b>${esc(s.last)} ${esc(s.first)}</b></span><span class="tick" aria-hidden="true">${d.ids.has(s.id)?'✓':''}</span></button>`).join('')}</div></section>`).join('')}
+   </div></div></div>`)+
+   `<div class="savebar"><span>${d.ids.size} presenti</span><span class="tools">
+    ${canDelete&&d.exists?`<button class="btn danger" data-action="pm-delete">Elimina</button>`:''}
+    <button class="btn" data-action="pm-cancel">Annulla</button>
+    <button class="btn primary" data-action="pm-save">${d.exists?'Salva modifiche':'Salva registro'}</button></span></div>`;
+}
+function pmTable(ids){const y=yearCur();
+  return dt({id:'pmt',unit:'presenti',unit1:'presente',sort:{k:'n',dir:'asc'},search:true,searchLabel:'Cerca bambino',empty:'Nessun presente.',
+    rows:ids.map(stu).filter(Boolean),cols:[{k:'n',h:'Studente',v:s=>fullName(s),cell:personCell},{k:'c',h:'Classe del mattino',v:s=>classOfStudent(s.id,y.id)?.name}]})}
+function vPmOggi(){
+  const y=yearCur(),pm=S.pm[y.id+'|'+TODAY];
+  if(pm&&!S.ui.editPm)return head(`Pomeriggio · ${longDate(TODAY)}`,'Appello di oggi',`Salvato alle ${pm.saved}. ${pm.ids.length} presenti.`,`<button class="btn" data-action="edit-pm">Correggi l’appello</button>`)+corpo(pmTable(pm.ids));
+  return head(`Pomeriggio · ${longDate(TODAY)}`,'Appello di oggi','Tutti i bambini dell’anno, divisi per classe del mattino.','<span class="sample">Dati di esempio</span>')+pmEditor(y.id,TODAY,{canDelete:false});
+}
+function vPmAppelli(){
+  const y=yearCur(),m=S.ui.month||(S.ui.month=TODAY.slice(0,7));
+  const rows=Object.entries(S.pm).filter(([k])=>k.startsWith(y.id+'|'+m)).map(([k,v])=>({date:k.split('|')[1],...v}));
+  return head('Pomeriggio','Appelli del pomeriggio','',monthPicker())+corpo(dt({id:'pmapp',unit:'appelli',unit1:'appello',sort:{k:'d',dir:'desc'},foot:true,empty:`Nessun appello in ${monthLabel(m)}.`,
+    rows,rowAttr:r=>`class="go" data-action="go" data-to="#pm-giorno/${r.date}"`,
+    cols:[dayCol,{k:'n',h:'Presenti',v:r=>r.ids.length,num:1,total:1},{k:'s',h:'Salvato',v:r=>r.saved}]}));
+}
+function vPmGiorno(date){const y=yearCur(),pm=S.pm[y.id+'|'+date];
+  return head('Pomeriggio',`Appello del ${fd(date)}`,pm?`Salvato alle ${pm.saved}. ${pm.ids.length} presenti.`:'Appello non trovato.',`<a class="btn" href="#pm-appelli">Indietro</a>`)+(pm?corpo(pmTable(pm.ids)):'')}
+
+/* ---------------- SEGRETERIA: oggi ---------------- */
+const NOW='09:40',KITCHEN='10:00'; // ponytail: ora finta per il prototipo; nel portale vero è l'ora del server
+function dayData(){
+  const rows=classesOf(yearCur().id).map(c=>{const r=S.rolls[c.id+'|'+TODAY];const n=studentsOf(c.id).length;
+    const ent=r?Object.entries(r.rows).map(([sid,x])=>[stu(+sid),x]).filter(([s])=>s):[];
+    return {c,r,n,s:r?sumRoll(r.rows):null,diets:ent.filter(([s,x])=>x.lunch&&s.diet).map(([s])=>s),io:ent.filter(([,x])=>x.in||x.out)}});
+  const done=rows.filter(x=>x.r),miss=rows.filter(x=>!x.r);
+  const sum=k=>done.reduce((a,x)=>a+x.s[k],0);
+  const diets={};done.forEach(x=>x.diets.forEach(s=>(diets[s.diet]||(diets[s.diet]=[])).push([s,x.c])));
+  return {rows,done,miss,meals:sum('l'),pres:sum('p'),abs:sum('a'),est:miss.reduce((a,x)=>a+x.n,0),diets};
+}
+function kitchenText(){const d=dayData();
+  return [`Pasti ${fd(TODAY)}: ${d.meals}${d.miss.length?` (+ fino a ${d.est} da ${d.miss.map(x=>x.c.name).join(', ')})`:''}`,
+    ...d.done.map(x=>`- ${x.c.name}: ${x.s.l}`),'Diete:',...Object.entries(d.diets).map(([k,v])=>`- ${k}: ${v.length}`)].join('\n')}
+function vDash(){
+  const d=dayData(),mins=60*(+KITCHEN.slice(0,2)-+NOW.slice(0,2))+(+KITCHEN.slice(3)-+NOW.slice(3)),ready=!d.miss.length;
+  const io=d.rows.flatMap(x=>x.io.map(([s,r])=>({s,r,c:x.c})));
+  return head(`Segreteria · ${longDate(TODAY)} · ore ${NOW}`,'La giornata di oggi',
+    ready?'Tutti gli appelli sono fatti: il conto dei pasti è definitivo.':`Alle ${KITCHEN} il conto dei pasti va alla cucina. Mancano ${mins} minuti e ${d.miss.length} ${d.miss.length===1?'appello':'appelli'}.`,
+    `<button class="btn primary" data-action="copy-kitchen">Copia il conto per la cucina</button>`)+corpo(
+   `<div class="grid3">
+    <div class="panel panel-b stat kpi"><span class="eyebrow">Pasti</span><b class="num" style="color:var(--gold)">${d.meals}</b><span>${ready?'conto definitivo':`+${d.est} possibili`}</span></div>
+    <div class="panel panel-b stat kpi"><span class="eyebrow">Presenti</span><b class="num">${d.pres}</b><span>${d.abs} assenti</span></div>
+    <div class="panel panel-b stat kpi"><span class="eyebrow">Appelli</span><b class="num" style="color:${ready?'var(--ok)':'var(--no)'}">${d.done.length}/${d.rows.length}</b><span>${ready?'tutte le classi':'classi fatte'}</span></div></div>
+   ${dt({id:'dash',naturale:true,title:'Classi',unit:'classi',unit1:'classe',perPage:50,foot:true,note:'apri una classe per il registro',
+      rows:d.rows,rowAttr:x=>`class="go" data-action="go" data-to="#registro/${x.c.id}/${TODAY}"`,
+      cols:[{k:'c',h:'Classe',v:x=>x.c.name,cell:x=>`<b>${esc(x.c.name)}</b><div class="small muted">${esc(teacherOf(x.c.id))}</div>`},
+       {k:'st',h:'Appello',v:x=>x.r?'Fatto '+x.r.saved:'Mancante',cell:x=>x.r?`<span class="pill ok">Fatto alle ${x.r.saved}</span>`:'<span class="pill warn">Mancante</span>'},
+       {k:'p',h:'Presenti',v:x=>x.s?.p,num:1,total:1,cell:x=>x.s?`${x.s.p}/${x.n}`:'<span class="muted">—</span>'},
+       {k:'a',h:'Assenti',v:x=>x.s?.a,num:1,total:1},
+       {k:'l',h:'Pasti',v:x=>x.s?.l,num:1,total:1,cell:x=>x.s?`<b>${x.s.l}</b>`:'<span class="muted">—</span>'},
+       {k:'d',h:'Diete',v:x=>x.diets.length,cell:x=>x.diets.map(s=>`<span class="chip" title="${esc(fullName(s))}">${esc(s.diet)}</span>`).join(' ')||'<span class="muted">—</span>'}]})}
+    <div class="sotto">
+     ${d.miss.length?`<div class="panel share" style="border-color:var(--gold)"><div class="panel-h"><h2>Appelli mancanti</h2><span class="pill warn">entro le ${KITCHEN}</span></div><div class="panel-b stack scroll" data-keep="miss">
+      ${d.miss.map(x=>`<div class="stack" style="gap:6px"><span><b>${esc(x.c.name)}</b> <span class="small muted">${esc(teacherOf(x.c.id))} · ${x.n} bambini</span></span>
+       <span class="tools"><button class="btn sm" data-action="remind" data-id="${x.c.id}">Promemoria</button><a class="btn sm" href="#registro/${x.c.id}/${TODAY}">Compila tu</a></span></div>`).join('')}</div></div>`:''}
+     <div class="panel share"><div class="panel-h"><h2>Diete per la cucina</h2><span class="pill warn">${Object.values(d.diets).flat().length}</span></div><div class="panel-b stack scroll" data-keep="diete">
+      ${Object.entries(d.diets).map(([k,v])=>`<div><div class="person" style="justify-content:space-between"><b>${esc(k)}</b><b class="num">${v.length}</b></div>
+        <span class="small muted">${v.map(([s,c])=>`${esc(s.first)} ${esc(s.last)} (${esc(c.name)})`).join(', ')}</span></div>`).join('')||'<p class="muted">Nessuna dieta speciale tra i presenti.</p>'}</div></div>
+     <div class="panel share"><div class="panel-h"><h2>Entrate e uscite</h2><span class="pill info">${io.length}</span></div><div class="panel-b stack scroll" data-keep="io">
+      ${io.map(({s,r,c})=>`<div class="person" style="justify-content:space-between;flex-wrap:wrap"><span><b>${esc(s.first)} ${esc(s.last)}</b><span class="small muted">${esc(c.name)}</span></span>
+        <span>${r.in?`<span class="pill info">entra ${r.in}</span>`:''} ${r.out?`<span class="pill info">esce ${r.out}</span>`:''}</span></div>`).join('')||'<p class="muted">Nessuna per ora.</p>'}</div></div>
+    </div>`);
+}
+
+/* ---------------- SEGRETERIA: registri ---------------- */
+function vRegistri(){
+  const yid=S.ui.regYear||(S.ui.regYear=yearCur().id),date=S.ui.regDate||(S.ui.regDate=TODAY);
+  const wk=new Date(date+'T12:00').getDay(),weekend=wk===0||wk===6,pm=S.pm[yid+'|'+date];
+  const rows=[...classesOf(yid).map(c=>{const r=S.rolls[c.id+'|'+date];return {name:c.name,who:teacherOf(c.id),n:studentsOf(c.id).length,r,s:r?sumRoll(r.rows):null,to:`#registro/${c.id}/${date}`}}),
+    {name:'Classe pomeriggio',who:'tutti i bambini dell’anno',n:yearStudents(yid).length,r:pm,s:pm?{p:pm.ids.length}:null,to:`#registro-pm/${yid}/${date}`,pm:1}];
+  return head('Segreteria','Registri','Apri un registro per correggerlo, eliminarlo o stamparlo. Se manca, puoi compilarlo tu.')+corpo(
+   `<div class="panel panel-b filters" style="flex:none">
+     <label class="field" for="reg-year">Anno scolastico<select id="reg-year" data-change="reg-year">${S.years.map(y=>`<option value="${y.id}" ${y.id===yid?'selected':''}>${esc(y.name)}</option>`).join('')}</select></label>
+     <label class="field" for="reg-date">Giorno<input type="date" id="reg-date" data-change="reg-date" value="${date}"></label>
+     <button class="btn" data-action="reg-today">Oggi</button>${weekend?'<span class="pill warn">Giorno festivo</span>':''}</div>`+
+   dt({id:'reg',title:`<span style="text-transform:capitalize">${longDate(date)}</span>`,unit:'registri',unit1:'registro',perPage:50,
+    rows,rowAttr:x=>`class="go" data-action="go" data-to="${x.to}"`,
+    cols:[{k:'c',h:'Classe',v:x=>x.name,cell:x=>`<b>${esc(x.name)}</b><div class="small muted">${esc(x.who)}</div>`},
+     {k:'st',h:'Stato',v:x=>x.r?'Fatto':'Mancante',cell:x=>x.r?'<span class="pill ok">Fatto</span>':`<span class="pill warn">Mancante</span> <span class="link">Compila</span>`},
+     {k:'p',h:'Presenti',v:x=>x.s?.p,num:1,cell:x=>x.s?`${x.s.p}/${x.n}`:'<span class="muted">—</span>'},
+     {k:'a',h:'Assenti',v:x=>x.pm?null:x.s?.a,num:1},{k:'l',h:'Pranzi',v:x=>x.pm?null:x.s?.l,num:1},
+     {k:'t',h:'Salvato',v:x=>x.r?.saved}]}));
+}
+function vRegistro(classId,date){
+  const c=cls(+classId);if(!c)return head('Segreteria','Classe non trovata');
+  const d=draftFor(c.id,date),ex=S.rolls[c.id+'|'+date];
+  return head(`Registro · ${esc(yearOf(c.yearId).name)}`,`${esc(c.name)} · ${fd(date)}`,
+    ex?`Salvato alle ${ex.saved} da ${esc(ex.by)}. Le modifiche della segreteria restano registrate.`:'Registro mancante: lo stai compilando al posto della classe.',
+    `<a class="btn" href="#registri">Indietro</a>${ex?'<button class="btn" data-action="print">Stampa</button>':''}`)+rollEditor(d,{canDelete:true});
+}
+function vRegistroPm(yearId,date){const y=yearOf(+yearId);
+  return head(`Registro pomeriggio · ${esc(y.name)}`,`Pomeriggio · ${fd(date)}`,S.pm[y.id+'|'+date]?'Correggi i presenti o elimina il registro.':'Registro mancante.',`<a class="btn" href="#registri">Indietro</a>`)+pmEditor(y.id,date,{canDelete:true})}
+
+/* ---------------- SEGRETERIA: studenti ---------------- */
+function vStudenti(){const y=yearCur();
+  return head('Segreteria','Studenti','Anagrafica di tutti gli studenti. L’assegnazione alle classi la fa l’amministratore.',`<button class="btn primary" data-action="stu-new">Nuovo studente</button>`)+corpo(
+   dt({id:'stu',unit:'studenti',unit1:'studente',search:true,searchLabel:'Cerca nome o codice fiscale',sort:{k:'n',dir:'asc'},
+    rows:S.students.filter(s=>!s.deleted),rowAttr:s=>`class="go" data-action="go" data-to="#studente/${s.id}"`,
+    cols:[{k:'n',h:'Nominativo',v:fullName,cell:personCell},{k:'b',h:'Data di nascita',v:s=>s.birth,cell:s=>fd(s.birth)},{k:'e',h:'Età',v:s=>age(s.birth),num:1},
+     {k:'x',h:'Sesso',v:s=>s.sex},{k:'c',h:`Classe ${esc(y.name)}`,v:s=>classOfStudent(s.id,y.id)?.name||'',cell:s=>classOfStudent(s.id,y.id)?esc(classOfStudent(s.id,y.id).name):'<span class="pill warn">Non assegnato</span>'},
+     {k:'cf',h:'Codice fiscale',v:s=>s.cf},{k:'d',h:'Dieta',v:s=>s.diet}]}));
+}
+function studentForm(s={}){
+  const f=(n,l,o={})=>`<label class="field ${o.full?'full':''}" for="sf-${n}">${l}${o.req?' *':''}<input id="sf-${n}" name="${n}" type="${o.type||'text'}" value="${esc(s[n]||'')}" ${o.req?'required':''} ${o.pattern?`pattern="${o.pattern}" title="${o.title}"`:''}></label>`;
+  return `<form data-form="student" data-id="${s.id||''}" class="stack" id="student-form">
+   <div class="formgrid">${f('first','Nome',{req:1})}${f('last','Cognome',{req:1})}
+    <div class="field">Sesso *<div class="radios"><label class="radio"><input type="radio" name="sex" value="M" required ${s.sex==='M'?'checked':''}> Maschio</label><label class="radio"><input type="radio" name="sex" value="F" ${s.sex==='F'?'checked':''}> Femmina</label></div></div>
+    ${f('birth','Data di nascita',{req:1,type:'date'})}${f('birthPlace','Luogo di nascita',{req:1})}${f('nat','Nazionalità')}
+    ${f('cf','Codice fiscale',{req:1,pattern:'[A-Za-z0-9]{16}',title:'16 caratteri, lettere e numeri'})}${f('address','Indirizzo')}</div>
+   <h3>Genitori</h3><div class="formgrid">${f('mName','Nominativo madre')}${f('mPhone','Telefono madre',{type:'tel'})}${f('mEmail','E-mail madre',{type:'email',full:1})}
+    ${f('fName','Nominativo padre')}${f('fPhone','Telefono padre',{type:'tel'})}${f('fEmail','E-mail padre',{type:'email',full:1})}</div>
+   <h3>Altro</h3><div class="formgrid">${f('bank','Banca di riferimento')}${f('diet','Dieta o allergie')}
+    <label class="field full" for="sf-note">Note<textarea id="sf-note" name="note" rows="3">${esc(s.note||'')}</textarea></label></div></form>`;
+}
+function vStudente(id){
+  const s=stu(+id);if(!s||s.deleted)return head('Segreteria','Studente non trovato','',`<a class="btn" href="#studenti">Indietro</a>`);
+  const y=yearCur();let p=0,a=0,l=0,pm=0;
+  for(const [k,r] of Object.entries(S.rolls)){const row=r.rows[s.id];if(!row||cls(+k.split('|')[0])?.yearId!==y.id)continue;row.s==='p'?p++:a++;if(row.lunch)l++}
+  for(const [k,r] of Object.entries(S.pm))if(k.startsWith(y.id+'|')&&r.ids.includes(s.id))pm++;
+  const hist=S.enroll.filter(e=>e.studentId===s.id).map(e=>cls(e.classId)).filter(Boolean);
+  return `<div class="head"><div class="person">${avatar(s,'lg')}<div><span class="eyebrow">${esc(classOfStudent(s.id,y.id)?.name||'Non assegnato')} · ${age(s.birth)} anni</span><h1>${esc(s.first)} ${esc(s.last)}</h1></div></div>
+   <div class="tools"><a class="btn" href="#studenti">Indietro</a><button class="btn" data-action="stu-edit" data-id="${s.id}">Modifica</button><button class="btn danger" data-action="stu-del" data-id="${s.id}">Elimina</button></div></div>`+corpo(
+   `<div class="grid3">
+    <div class="panel panel-b stat"><b class="num">${p}</b><span>presenze ${esc(y.name)}</span></div>
+    <div class="panel panel-b stat"><b class="num">${a}</b><span>assenze</span></div>
+    <div class="panel panel-b stat"><b class="num">${l} · ${pm}</b><span>pranzi · pomeriggi</span></div></div>
+   <div class="cols" style="--cols:minmax(0,1fr) minmax(0,1fr)">
+    <div class="panel fill"><div class="panel-h"><h2>Info generali</h2></div><div class="panel-b scroll" data-keep="info"><dl>
+     <dt>Sesso</dt><dd>${s.sex==='M'?'Maschio':'Femmina'}</dd><dt>Nato il</dt><dd>${fd(s.birth)} a ${esc(s.birthPlace)}</dd><dt>Nazionalità</dt><dd>${esc(s.nat)||'—'}</dd>
+     <dt>Codice fiscale</dt><dd>${esc(s.cf)}</dd><dt>Indirizzo</dt><dd>${esc(s.address)||'—'}</dd><dt>Banca</dt><dd>${esc(s.bank)||'—'}</dd>
+     <dt>Dieta</dt><dd>${esc(s.diet)||'Nessuna'}</dd><dt>Note</dt><dd>${esc(s.note)||'—'}</dd>
+     <dt>Madre</dt><dd>${esc(s.mName)||'—'}<div class="small muted">${esc(s.mPhone)} · ${esc(s.mEmail)}</div></dd>
+     <dt>Padre</dt><dd>${esc(s.fName)||'—'}<div class="small muted">${esc(s.fPhone)} · ${esc(s.fEmail)}</div></dd></dl></div></div>
+    ${dt({id:'hist',title:'Classi negli anni',unit:'anni',unit1:'anno',sort:{k:'y',dir:'desc'},empty:'Mai assegnato a una classe.',
+      rows:hist,cols:[{k:'y',h:'Anno',v:c=>yearOf(c.yearId).name},{k:'c',h:'Classe',v:c=>c.name},{k:'r',h:'Presenze',num:1,v:c=>Object.entries(S.rolls).filter(([k,r])=>k.startsWith(c.id+'|')&&r.rows[s.id]?.s==='p').length}]})}
+   </div>`);
+}
+
+/* ---------------- SEGRETERIA: report ---------------- */
+function reportData(){
+  const f=S.ui.rep||(S.ui.rep={year:yearCur().id,cls:0,from:'2026-10-01',to:'2026-10-31'});
+  const classIds=classesOf(f.year).filter(c=>!f.cls||c.id===f.cls).map(c=>c.id);const by={};
+  const get=sid=>by[sid]||(by[sid]={sid,p:0,a:0,l:0,pm:0,in:0,out:0,days:{}});
+  for(const [k,r] of Object.entries(S.rolls)){const [cid,d]=k.split('|');if(!classIds.includes(+cid)||d<f.from||d>f.to)continue;
+    for(const [sid,row] of Object.entries(r.rows)){const g=get(sid);row.s==='p'?g.p++:g.a++;if(row.lunch)g.l++;if(row.in)g.in++;if(row.out)g.out++;g.days[d]={...row}}}
+  for(const [k,r] of Object.entries(S.pm)){const [yid,d]=k.split('|');if(+yid!==f.year||d<f.from||d>f.to)continue;
+    for(const sid of r.ids)if(by[sid]||!f.cls){const g=get(sid);g.pm++;(g.days[d]||(g.days[d]={})).pm=true}}
+  return Object.values(by);
+}
+function vReport(){
+  const data=reportData(),f=S.ui.rep;
+  const months=[];for(let m='2026-09';m<=TODAY.slice(0,7);m=addMonth(m,1))months.push(m);
+  const n=k=>({k,num:1,total:1,v:g=>g[k]});
+  return head('Segreteria','Report presenze','Totali per studente nel periodo. Apri una riga per il dettaglio delle giornate.',
+    `<button class="btn" data-action="csv">Scarica Excel</button><button class="btn" data-action="print">Stampa</button>`)+corpo(
+   `<div class="panel panel-b filters" style="flex:none">
+    <label class="field" for="rep-year">Anno<select id="rep-year" data-change="rep" data-k="year">${S.years.map(y=>`<option value="${y.id}" ${y.id===f.year?'selected':''}>${esc(y.name)}</option>`).join('')}</select></label>
+    <label class="field" for="rep-cls">Classe<select id="rep-cls" data-change="rep" data-k="cls"><option value="0">Tutte</option>${classesOf(f.year).map(c=>`<option value="${c.id}" ${c.id===f.cls?'selected':''}>${esc(c.name)}</option>`).join('')}</select></label>
+    <label class="field" for="rep-month">Mese<select id="rep-month" data-change="rep-month"><option value="">Periodo libero</option>${months.map(m=>`<option value="${m}" ${f.from===m+'-01'&&f.to.startsWith(m)?'selected':''}>${monthLabel(m)}</option>`).join('')}</select></label>
+    <label class="field" for="rep-from">Dal<input type="date" id="rep-from" data-change="rep" data-k="from" value="${f.from}"></label>
+    <label class="field" for="rep-to">Al<input type="date" id="rep-to" data-change="rep" data-k="to" value="${f.to}"></label></div>`+
+   dt({id:'rep',title:`${f.cls?esc(cls(f.cls).name):'Tutte le classi'} · ${fd(f.from)} – ${fd(f.to)}`,unit:'studenti',unit1:'studente',search:true,searchLabel:'Cerca studente',
+    sort:{k:'s',dir:'asc'},foot:true,empty:'Nessun registro nel periodo scelto.',rows:data,rowAttr:g=>`class="go" data-action="rep-detail" data-sid="${g.sid}"`,
+    cols:[{k:'s',h:'Studente',v:g=>fullName(stu(+g.sid))},{k:'c',h:'Classe',v:g=>classOfStudent(+g.sid,f.year)?.name},
+     {...n('p'),h:'Presenze'},{...n('a'),h:'Assenze'},{...n('l'),h:'Pranzi'},{...n('pm'),h:'Pomeriggi'},{...n('in'),h:'Entrate rit. <span class="new">nuovo</span>'},{...n('out'),h:'Uscite ant. <span class="new">nuovo</span>'}]}));
+}
+
+/* ---------------- ADMIN: anni ---------------- */
+function vAnni(){
+  const info=y=>{const cs=classesOf(y.id);return {y,nc:cs.length,nb:yearStudents(y.id).length,nr:Object.keys(S.rolls).filter(k=>cs.some(c=>k.startsWith(c.id+'|'))).length}};
+  return head('Amministratore','Anni scolastici','L’anno in corso è quello in cui lavorano classi e pomeriggio. Ogni anno ha le sue classi.',`<button class="btn primary" data-action="year-new">Nuovo anno scolastico</button>`)+corpo(
+   dt({id:'anni',unit:'anni',unit1:'anno',sort:{k:'n',dir:'desc'},rows:S.years.map(info),
+    cols:[{k:'n',h:'Anno',v:x=>x.y.name,cell:x=>`<b>${esc(x.y.name)}</b> ${x.y.current?'<span class="pill ok">In corso</span>':''}`},
+     {k:'c',h:'Classi',num:1,v:x=>x.nc,cell:x=>`<button class="link" data-action="classi-of" data-id="${x.y.id}">${x.nc}</button>`},
+     {k:'b',h:'Bambini',num:1,v:x=>x.nb},{k:'r',h:'Registri',num:1,v:x=>x.nr},
+     {k:'p',h:'Password pomeriggio',sort:false,v:x=>'',cell:x=>`<span class="secret">${esc(x.y.pmPass)}</span> <button class="btn sm" data-action="year-pass" data-id="${x.y.id}">Cambia</button>`},
+     {k:'az',h:'',sort:false,v:x=>'',cell:x=>`<span class="tools" style="justify-content:flex-end">${x.y.current?'':`<button class="btn sm" data-action="year-current" data-id="${x.y.id}">Imposta in corso</button>`}<button class="btn sm danger" data-action="year-del" data-id="${x.y.id}">Elimina</button></span>`}]}));
+}
+
+/* ---------------- ADMIN: classi ---------------- */
+function vClassi(){
+  const yid=S.ui.classYear||(S.ui.classYear=yearCur().id);
+  return head('Amministratore','Classi','Apri una classe per gestire bambini, insegnanti e password.',`<button class="btn primary" data-action="wiz-start">Nuova classe</button>`)+corpo(
+   `<div class="panel panel-b filters" style="flex:none"><label class="field" for="cls-year">Anno scolastico<select id="cls-year" data-change="cls-year">${S.years.map(y=>`<option value="${y.id}" ${y.id===yid?'selected':''}>${esc(y.name)}${y.current?' · in corso':''}</option>`).join('')}</select></label>
+    <span class="small muted" style="flex:1;min-width:180px">${notAssigned(yid).length} studenti non ancora assegnati in questo anno.</span></div>`+
+   dt({id:'cls',unit:'classi',unit1:'classe',sort:{k:'n',dir:'asc'},foot:true,empty:'Nessuna classe in questo anno.',
+    rows:classesOf(yid),rowAttr:c=>`class="go" data-action="go" data-to="#classe/${c.id}"`,
+    cols:[{k:'n',h:'Classe',v:c=>c.name,cell:c=>`<b>${esc(c.name)}</b>`},{k:'l',h:'Livello',v:c=>levelLabel(c.level)},{k:'b',h:'Bambini',num:1,total:1,v:c=>studentsOf(c.id).length},
+     {k:'t',h:'Insegnanti',v:c=>teacherOf(c.id)},{k:'r',h:'Registri',num:1,total:1,v:c=>rollsOfClass(c.id).length}]}));
+}
+function vClasse(id){
+  const c=cls(+id);if(!c)return head('Amministratore','Classe non trovata','',`<a class="btn" href="#classi">Indietro</a>`);
+  const teachers=S.users.filter(u=>u.classIds.includes(c.id));
+  return head(`Classe · anno ${esc(yearOf(c.yearId).name)}`,esc(c.name),levelLabel(c.level),`<a class="btn" href="#classi">Indietro</a><button class="btn danger" data-action="cls-del" data-id="${c.id}">Elimina classe</button>`)+corpo(
+   `<div class="grid2">
+    <div class="panel panel-b stack">
+     <form data-form="cls-rename" data-id="${c.id}" class="filters"><label class="field" for="cls-name" style="flex:1">Nome classe<input id="cls-name" name="name" value="${esc(c.name)}" required></label><button class="btn">Rinomina</button></form>
+     <span class="small muted">Password del tablet di classe</span>
+     <span><span class="secret">${esc(c.pass)}</span> <button class="btn sm" data-action="cls-pass" data-id="${c.id}">Cambia</button></span></div>
+    <div class="panel"><div class="panel-h"><h2>Insegnanti</h2><button class="btn sm" data-action="cls-teacher" data-id="${c.id}">Assegna</button></div><div class="panel-b stack" style="gap:6px">
+     ${teachers.map(u=>`<div class="person" style="justify-content:space-between"><span><b>${esc(u.name)}</b><span class="small muted">${esc(u.email)}</span></span><button class="btn sm" data-action="cls-unteach" data-id="${c.id}" data-uid="${u.id}">Togli</button></div>`).join('')||'<p class="muted">Nessuna insegnante assegnata.</p>'}
+    </div></div></div>`+
+   dt({id:'clsstu',title:'Studenti',unit:'bambini',unit1:'bambino',sort:{k:'n',dir:'asc'},search:true,searchLabel:'Cerca bambino',empty:'Nessun bambino in questa classe.',
+    tools:`<button class="btn primary sm" data-action="cls-add" data-id="${c.id}">Aggiungi studenti</button>`,rows:studentsOf(c.id),
+    cols:[{k:'n',h:'Studente',v:fullName,cell:personCell},{k:'e',h:'Età',num:1,v:s=>age(s.birth)},{k:'b',h:'Data di nascita',v:s=>s.birth,cell:s=>fd(s.birth)},{k:'d',h:'Dieta',v:s=>s.diet},
+     {k:'x',h:'',sort:false,v:()=>'',cell:s=>`<button class="btn sm danger" data-action="cls-rm" data-id="${c.id}" data-sid="${s.id}">Rimuovi</button>`}]}));
+}
+function addStudentsList(yearId,checked=[]){const y=yearOf(yearId);
+  const free=notAssigned(yearId),taken=S.students.filter(s=>!s.deleted&&classOfStudent(s.id,yearId)).sort(byName);
+  return `<div class="checklist">${free.map(s=>`<label for="add-${s.id}"><input type="checkbox" id="add-${s.id}" name="sid" value="${s.id}" ${checked.includes(s.id)?'checked':''}>${avatar(s,1)}<span><b>${esc(fullName(s))}</b><span class="small muted">${age(s.birth)} anni · nato il ${fd(s.birth)}</span></span></label>`).join('')||'<p class="empty">Tutti gli studenti sono già in una classe.</p>'}
+   ${taken.map(s=>`<label class="dis"><input type="checkbox" disabled>${avatar(s,1)}<span><b>${esc(fullName(s))}</b><span class="small muted">già in ${esc(classOfStudent(s.id,yearId).name)}</span></span></label>`).join('')}</div>
+   <p class="small muted">In un anno scolastico ogni bambino sta in una sola classe (${esc(y.name)}). Se uno studente manca, la segreteria lo crea da Studenti.</p>`}
+
+/* ---------------- ADMIN: nuova classe ---------------- */
+const WSTEPS=['Anno','Nome e livello','Accesso','Bambini','Riepilogo'];
+const genPass=()=>(['girasole','lavanda','quercia','betulla','acero','tiglio','glicine','salice'][Math.floor(Math.random()*8)])+'-'+String(Math.floor(Math.random()*90)+10);
+function vNuovaClasse(){
+  const w=S.ui.wiz||(S.ui.wiz={step:0,yearId:yearCur().id,name:'',level:'cdb',pass:genPass(),teachers:[],sids:[],err:''});
+  const y=yearOf(w.yearId);let body='';
+  if(w.step===0)body=`<h2>In quale anno scolastico?</h2><div class="radios">${[...S.years].sort((a,b)=>b.name.localeCompare(a.name)).map(y=>`<label class="radio block"><input type="radio" name="wy" value="${y.id}" data-change="wiz" data-k="yearId" ${y.id===w.yearId?'checked':''}><span>${esc(y.name)}<small>${y.current?'Anno in corso · ':''}${classesOf(y.id).length} classi</small></span></label>`).join('')}</div>
+    <p class="small muted">Serve un anno nuovo? <a class="link" href="#anni">Crealo in Anni scolastici</a>.</p>`;
+  if(w.step===1)body=`<h2>Come si chiama la classe?</h2>
+    <label class="field" for="wiz-name">Nome classe *<input id="wiz-name" data-change="wiz" data-k="name" value="${esc(w.name)}" placeholder="es. Ciclamini" required></label>
+    <div class="field">Livello<div class="radios">
+     <label class="radio block"><input type="radio" name="wl" value="cdb" data-change="wiz" data-k="level" ${w.level==='cdb'?'checked':''}><span>Casa dei Bambini<small>infanzia, 3–6 anni</small></span></label>
+     <label class="radio block"><input type="radio" name="wl" value="pri" data-change="wiz" data-k="level" ${w.level==='pri'?'checked':''}><span>Primaria<small>6–11 anni</small></span></label></div></div>
+    <p class="small muted">Classi già presenti in ${esc(y.name)}: ${classesOf(y.id).map(c=>esc(c.name)).join(', ')||'nessuna'}. Il nome deve essere diverso.</p>`;
+  if(w.step===2){const ts=S.users.filter(u=>u.role==='insegnante');
+    body=`<h2>Chi fa l’appello?</h2>
+    <div class="field">Insegnanti della classe<div class="checklist">${ts.map(u=>`<label for="wt-${u.id}"><input type="checkbox" id="wt-${u.id}" data-change="wiz-t" value="${u.id}" ${w.teachers.includes(u.id)?'checked':''}><span><b>${esc(u.name)}</b><span class="small muted">${u.classIds.map(id=>esc(cls(id)?.name)).join(', ')||'nessuna classe'}</span></span></label>`).join('')}</div></div>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Password della classe (accesso dal tablet, come oggi)</span>
+     <span><span class="secret">${esc(w.pass)}</span> <button class="btn sm" data-action="wiz-pass">Genera un’altra</button></span></div>`}
+  if(w.step===3)body=`<h2>Quali bambini?</h2><p class="muted">Seleziona gli studenti da iscrivere. Puoi aggiungerli anche dopo.</p><form id="wiz-kids">${addStudentsList(w.yearId,w.sids)}</form>`;
+  if(w.step===4)body=`<h2>Controlla e crea</h2><dl>
+    <dt>Anno scolastico</dt><dd>${esc(y.name)}</dd><dt>Classe</dt><dd>${esc(w.name)}</dd><dt>Livello</dt><dd>${levelLabel(w.level)}</dd>
+    <dt>Insegnanti</dt><dd>${w.teachers.map(id=>esc(S.users.find(u=>u.id===id).name)).join(', ')||'nessuna (si assegnano dopo)'}</dd>
+    <dt>Password tablet</dt><dd><span class="secret">${esc(w.pass)}</span></dd>
+    <dt>Bambini</dt><dd>${w.sids.length?w.sids.map(id=>esc(fullName(stu(id)))).join(', '):'nessuno (si aggiungono dopo)'}</dd></dl>`;
+  return head('Amministratore · Classi','Nuova classe','')+corpo(
+   `<ol class="steps">${WSTEPS.map((s,i)=>`<li class="${i<w.step?'done':i===w.step?'cur':''}" ${i===w.step?'aria-current="step"':''}>${s}</li>`).join('')}</ol>
+   <div class="panel fill"><div class="panel-b stack scroll" data-keep="wiz">${body}${w.err?`<p class="err" role="alert">${esc(w.err)}</p>`:''}</div>
+    <div class="foot"><button class="btn" data-action="wiz-cancel">Annulla</button>${w.step?'<button class="btn" data-action="wiz-back">Indietro</button>':''}
+     <button class="btn primary" data-action="wiz-next">${w.step===4?'Crea classe':'Avanti'}</button></div></div>`);
+}
+
+/* ---------------- ADMIN: accessi ---------------- */
+function vAccessi(){
+  const lab={admin:'Amministratore',segreteria:'Segreteria',insegnante:'Classe',pomeriggio:'Pomeriggio'},pc={admin:'leaf',segreteria:'info',insegnante:'ok',pomeriggio:'warn'};
+  const M=[['Appello della propria classe',1,0,0,0],['Storico della propria classe',1,0,0,0],['Appello e storico pomeriggio',0,1,0,0],['Sintesi del giorno e pasti',0,0,1,0],['Registri: correggi, elimina, stampa',0,0,1,0],
+    ['Anagrafica studenti',0,0,1,0],['Report, Excel e stampa',0,0,1,0],['Anni e password pomeriggio',0,0,0,1],['Classi, iscrizioni, password classe',0,0,0,1],['Account e profili',0,0,0,1]];
+  const yes=v=>v?'<span style="color:var(--ok);font-weight:700">●</span>':'';
+  return head('Amministratore','Accessi','Ogni persona ha il suo account e vede solo il suo profilo. Al primo accesso sceglie la password.',`<button class="btn primary" data-action="user-new">Nuovo utente</button>`)+corpo(
+   `<div class="cols" style="--cols:minmax(0,1.5fr) minmax(300px,1fr)">`+
+   dt({id:'users',title:'Utenti',unit:'utenti',unit1:'utente',search:true,searchLabel:'Cerca utente',sort:{k:'n',dir:'asc'},rows:S.users,
+    cols:[{k:'n',h:'Nome',v:u=>u.name,cell:u=>`<b>${esc(u.name)}</b><div class="small muted">${esc(u.email)}</div>`},{k:'r',h:'Profilo',v:u=>lab[u.role],cell:u=>`<span class="pill ${pc[u.role]}">${lab[u.role]}</span>`},
+     {k:'c',h:'Classi',v:u=>u.classIds.map(id=>cls(id)?.name).join(', ')},{k:'x',h:'',sort:false,v:()=>'',cell:u=>u.role==='admin'?'':`<button class="btn sm danger" data-action="user-del" data-id="${u.id}">Disattiva</button>`}]})+
+   dt({id:'matrix',title:'Cosa vede ogni profilo',static:true,rows:M,
+    cols:[{k:'f',h:'Funzione',v:r=>r[0]},{k:'1',h:'Classe',v:()=>'',cell:r=>yes(r[1])},{k:'2',h:'Pom.',v:()=>'',cell:r=>yes(r[2])},{k:'3',h:'Segr.',v:()=>'',cell:r=>yes(r[3])},{k:'4',h:'Admin',v:()=>'',cell:r=>yes(r[4])}]})+`</div>`);
+}
+
+/* ---------------- router ---------------- */
+const VIEWS={oggi:vOggi,appelli:vAppelli,giorno:vGiorno,'pm-oggi':vPmOggi,'pm-appelli':vPmAppelli,'pm-giorno':vPmGiorno,
+  dashboard:vDash,registri:vRegistri,registro:vRegistro,'registro-pm':vRegistroPm,studenti:vStudenti,studente:vStudente,report:vReport,
+  anni:vAnni,classi:vClassi,classe:vClasse,'nuova-classe':vNuovaClasse,accessi:vAccessi};
+function render(fresh){
+  const root=document.getElementById('root');
+  const keep={};if(!fresh)document.querySelectorAll('[data-keep]').forEach(e=>keep[e.dataset.keep]=[e.scrollTop,e.scrollLeft]);
+  if(!S.role){root.innerHTML=location.hash==='#login'?vLogin():vLanding();return}
+  const r=ROLES[S.role];const [view,...args]=location.hash.slice(1).split('/');
+  if(![...r.nav.map(n=>n[0]),...r.sub].includes(view)){history.replaceState(null,'','#'+r.nav[0][0]);return render(true)}
+  root.innerHTML=shell(view,VIEWS[view](...args));
+  for(const [k,[t,l]] of Object.entries(keep)){const e=document.querySelector(`[data-keep="${k}"]`);if(e){e.scrollTop=t;e.scrollLeft=l}}
+}
+addEventListener('hashchange',()=>{S.ui.draft=null;S.ui.pmDraft=null;S.ui.editToday=false;S.ui.editPm=false;closeDlg();render(true)});
+
+/* ---------------- azioni ---------------- */
+function saveRoll(by){const d=S.ui.draft;S.rolls[d.k]={saved:new Date().toTimeString().slice(0,5),by,rows:d.rows};S.ui.draft=null}
+const A={
+  'login-tab':d=>{S.ui.ltab=d.tab;S.ui.lerr='';go('#login')},
+  'pw-toggle':(d,el)=>{const i=el.previousElementSibling;const show=i.type==='password';i.type=show?'text':'password';el.textContent=show?'Nascondi':'Mostra';el.setAttribute('aria-label',show?'Nascondi password':'Mostra password')},
+  forgot:()=>openDlg('Password dimenticata','<p>Scrivi la tua email: ti mandiamo un link per sceglierne una nuova. Il link vale un’ora.</p><form data-form="forgot" id="fg-form" class="stack"><label class="field" for="fg-email">Email<input id="fg-email" name="email" type="email" required></label></form>','<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="fg-form">Invia il link</button>'),
+  demo:d=>{S.ui.lemail=d.email;S.ui.lerr='';render(true);const pw=document.getElementById('lg-pw');pw.value='montessori';pw.focus()},
+  logout:()=>{S.role=null;S.ui={};go('#login')},
+  go:d=>go(d.to),close:closeDlg,
+  'confirm-ok':()=>{const f=S.ui.pending;S.ui.pending=null;closeDlg();f&&f()},
+  print:()=>window.print(),
+  'dt-sort':d=>{const st=S.ui.dt[d.id],on=st.sort?.k===d.k;st.sort={k:d.k,dir:on&&st.sort.dir==='asc'?'desc':'asc'};st.page=0;render()},
+  'dt-page':d=>{S.ui.dt[d.id].page=+d.p;render()},
+  month:d=>{S.ui.month=addMonth(S.ui.month,+d.n);render(true)},
+  mark:d=>{const row=S.ui.draft.rows[d.sid];
+    if(d.v==='p'){row.s='p';row.lunch=true}
+    if(d.v==='a'){Object.assign(row,{s:'a',lunch:false,in:'',out:''})}
+    if(d.v==='l'&&row.s==='p')row.lunch=!row.lunch;render()},
+  'roll-save':()=>{const seg=S.role==='segreteria';saveRoll(seg?'Segreteria':'Ms. Hannah');S.ui.editToday=false;toast(seg?'Registro salvato':'Appello salvato');seg?go('#registri'):render(true)},
+  'roll-cancel':()=>{S.ui.draft=null;S.ui.editToday=false;S.role==='segreteria'?go('#registri'):render(true)},
+  'roll-delete':()=>ask('Eliminare il registro?','Il registro di questo giorno viene cancellato. La classe potrà rifarlo.','Elimina registro',()=>{delete S.rolls[S.ui.draft.k];S.ui.draft=null;toast('Registro eliminato');go('#registri')}),
+  'edit-today':()=>{S.ui.editToday=true;S.ui.draft=null;render(true)},
+  'pm-toggle':d=>{const s=S.ui.pmDraft.ids,id=+d.sid;s.has(id)?s.delete(id):s.add(id);render()},
+  'pm-save':()=>{const d=S.ui.pmDraft;S.pm[d.k]={saved:new Date().toTimeString().slice(0,5),ids:[...d.ids]};S.ui.pmDraft=null;S.ui.editPm=false;toast('Appello del pomeriggio salvato');S.role==='segreteria'?go('#registri'):render(true)},
+  'pm-cancel':()=>{S.ui.pmDraft=null;S.ui.editPm=false;S.role==='segreteria'?go('#registri'):render(true)},
+  'pm-delete':()=>ask('Eliminare il registro del pomeriggio?','Il registro di questo giorno viene cancellato.','Elimina registro',()=>{delete S.pm[S.ui.pmDraft.k];S.ui.pmDraft=null;toast('Registro eliminato');go('#registri')}),
+  'edit-pm':()=>{S.ui.editPm=true;S.ui.pmDraft=null;render(true)},
+  'reg-today':()=>{S.ui.regDate=TODAY;render(true)},
+  'copy-kitchen':()=>{const t=kitchenText();const show=()=>openDlg('Conto per la cucina',`<pre style="white-space:pre-wrap;margin:0">${esc(t)}</pre>`);
+    navigator.clipboard?navigator.clipboard.writeText(t).then(()=>toast('Conto copiato: incollalo nel messaggio alla cucina'),show):show()},
+  remind:d=>toast(`Promemoria inviato a ${teacherOf(+d.id)}`),
+  'stu-new':()=>openDlg('Nuovo studente',studentForm(),`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="student-form">Crea studente</button>`),
+  'stu-edit':d=>openDlg('Modifica studente',studentForm(stu(+d.id)),`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="student-form">Salva</button>`),
+  'stu-del':d=>{const s=stu(+d.id);ask(`Eliminare ${esc(s.first)} ${esc(s.last)}?`,'Lo studente sparisce da anagrafica e classi. I registri già salvati conservano il suo nome.','Elimina studente',()=>{s.deleted=true;S.enroll=S.enroll.filter(e=>e.studentId!==s.id);toast('Studente eliminato');go('#studenti')})},
+  'rep-detail':d=>{const g=reportData().find(x=>x.sid===d.sid);const s=stu(+d.sid);
+    openDlg(esc(fullName(s)),`<p class="muted">Dettaglio giornate dal ${fd(S.ui.rep.from)} al ${fd(S.ui.rep.to)}</p>`+dt({id:'repdet',static:true,naturale:true,perPage:500,
+      rows:Object.entries(g.days).sort().map(([day,r])=>({day,...r})),
+      cols:[{k:'d',h:'Giorno',v:r=>fd(r.day)},{k:'p',h:'Presenza',v:()=>'',cell:r=>r.s==='p'?'<span class="pill ok">Presente</span>':r.s==='a'?'<span class="pill no">Assente</span>':'<span class="muted">—</span>'},
+       {k:'l',h:'Pranzo',v:r=>r.lunch?'●':''},{k:'pm',h:'Pomeriggio',v:r=>r.pm?'●':''},{k:'i',h:'Entrata',v:r=>r.in},{k:'o',h:'Uscita',v:r=>r.out}]}))},
+  csv:()=>{const data=reportData();const rows=[['Studente','Presenze','Assenze','Pranzi','Pomeriggi','Entrate in ritardo','Uscite anticipate'],...data.map(g=>[fullName(stu(+g.sid)),g.p,g.a,g.l,g.pm,g.in,g.out])];
+    const blob=new Blob(['﻿'+rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\r\n')],{type:'text/csv'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`report_${S.ui.rep.from}_${S.ui.rep.to}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('File scaricato')},
+  'year-new':()=>openDlg('Nuovo anno scolastico',`<form data-form="year-new" id="year-form" class="stack">
+     <label class="field" for="yn-name">Anno scolastico *<input id="yn-name" name="name" required pattern="\\d{4}/\\d{2}" title="Formato 2027/28" placeholder="2027/28"></label>
+     <label class="field" for="yn-pass">Password classe pomeridiana *<input id="yn-pass" name="pmPass" required value="${genPass()}"></label>
+     <label class="field" for="yn-copy">Parti dalle classi di un altro anno <span class="new">nuovo</span><select id="yn-copy" name="copy"><option value="">No, anno vuoto</option>${S.years.map(y=>`<option value="${y.id}">${esc(y.name)} (${classesOf(y.id).length} classi, senza bambini)</option>`).join('')}</select></label>
+     <p class="err" id="yn-err" role="alert"></p></form>`,`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="year-form">Crea anno scolastico</button>`),
+  'year-current':d=>{const y=yearOf(+d.id);ask(`Impostare ${esc(y.name)} come anno in corso?`,'Da quel momento classi e pomeriggio lavorano su questo anno, e le password dell’anno precedente smettono di funzionare.','Imposta anno in corso',()=>{S.years.forEach(x=>x.current=x.id===y.id);toast(`${y.name} è l’anno in corso`);render()})},
+  'year-del':d=>{const y=yearOf(+d.id);const cs=classesOf(y.id);const n=Object.keys(S.rolls).filter(k=>cs.some(c=>k.startsWith(c.id+'|'))).length;
+    if(y.current)return toast('Non puoi eliminare l’anno in corso',1);
+    if(n)return openDlg('Anno non eliminabile',`<p>${esc(y.name)} ha ${n} registri salvati. Eliminandolo si perderebbero i report di quell’anno.</p>`,`<button class="btn" data-action="close">Ho capito</button>`);
+    ask(`Eliminare ${esc(y.name)}?`,`Vengono eliminate anche le sue ${cs.length} classi.`,'Elimina anno',()=>{S.years=S.years.filter(x=>x!==y);S.classes=S.classes.filter(c=>c.yearId!==y.id);toast('Anno eliminato');render()})},
+  'year-pass':d=>{const y=yearOf(+d.id);openDlg('Password classe pomeridiana',`<form data-form="year-pass" data-id="${y.id}" id="yp-form"><label class="field" for="yp">Nuova password per ${esc(y.name)}<input id="yp" name="pass" required minlength="8" value="${esc(y.pmPass)}"></label></form>`,`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="yp-form">Cambia password</button>`)},
+  'classi-of':d=>{S.ui.classYear=+d.id;go('#classi')},
+  'wiz-start':()=>{S.ui.wiz=null;go('#nuova-classe')},
+  'wiz-cancel':()=>{S.ui.wiz=null;go('#classi')},
+  'wiz-back':()=>{S.ui.wiz.step--;S.ui.wiz.err='';render(true)},
+  'wiz-pass':()=>{S.ui.wiz.pass=genPass();render()},
+  'wiz-next':()=>{const w=S.ui.wiz;w.err='';
+    if(w.step===1){w.name=w.name.trim();if(!w.name)w.err='Scrivi il nome della classe.';else if(classesOf(w.yearId).some(c=>c.name.toLowerCase()===w.name.toLowerCase()))w.err=`In ${yearOf(w.yearId).name} esiste già una classe “${w.name}”. Scegli un altro nome.`}
+    if(w.step===3)w.sids=[...document.querySelectorAll('#wiz-kids input[name=sid]:checked')].map(i=>+i.value);
+    if(w.err)return render();
+    if(w.step<4){w.step++;return render(true)}
+    const c={id:newId(),yearId:w.yearId,name:w.name,level:w.level,pass:w.pass};S.classes.push(c);
+    w.sids.forEach(sid=>S.enroll.push({classId:c.id,studentId:sid}));
+    S.users.filter(u=>w.teachers.includes(u.id)).forEach(u=>u.classIds.push(c.id));
+    S.ui.wiz=null;S.ui.classYear=c.yearId;toast(`Classe ${c.name} creata`);go('#classe/'+c.id)},
+  'cls-pass':d=>{const c=cls(+d.id);openDlg('Password della classe',`<form data-form="cls-pass" data-id="${c.id}" id="cp-form" class="stack"><label class="field" for="cp">Nuova password per ${esc(c.name)}<input id="cp" name="pass" required minlength="8" value="${genPass()}"></label><p class="small muted">Comunicala alle insegnanti: quella vecchia smette di funzionare subito.</p></form>`,`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="cp-form">Cambia password</button>`)},
+  'cls-add':d=>{const c=cls(+d.id);openDlg(`Aggiungi studenti a ${esc(c.name)}`,`<form data-form="cls-add" data-id="${c.id}" id="ca-form">${addStudentsList(c.yearId)}</form>`,`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="ca-form">Aggiungi selezionati</button>`)},
+  'cls-rm':d=>{const s=stu(+d.sid),c=cls(+d.id);ask(`Togliere ${esc(s.first)} ${esc(s.last)} da ${esc(c.name)}?`,'Non comparirà più nell’appello. I registri già salvati restano invariati.','Rimuovi',()=>{S.enroll=S.enroll.filter(e=>!(e.classId===c.id&&e.studentId===s.id));toast('Studente rimosso dalla classe');render()})},
+  'cls-teacher':d=>{const c=cls(+d.id);const ts=S.users.filter(u=>u.role==='insegnante'&&!u.classIds.includes(c.id));
+    openDlg(`Insegnanti di ${esc(c.name)}`,ts.length?`<form data-form="cls-teacher" data-id="${c.id}" id="ct-form"><div class="checklist">${ts.map(u=>`<label for="ct-${u.id}"><input type="checkbox" id="ct-${u.id}" name="uid" value="${u.id}"><span><b>${esc(u.name)}</b><span class="small muted">${esc(u.email)}</span></span></label>`).join('')}</div></form>`:'<p class="muted">Tutte le insegnanti sono già assegnate. Puoi crearne una nuova da Accessi.</p>',ts.length?`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="ct-form">Assegna</button>`:'')},
+  'cls-unteach':d=>{const u=S.users.find(x=>x.id===+d.uid);u.classIds=u.classIds.filter(x=>x!==+d.id);render()},
+  'cls-del':d=>{const c=cls(+d.id),n=rollsOfClass(c.id).length;
+    if(n)return openDlg('Classe non eliminabile',`<p>${esc(c.name)} ha ${n} registri salvati: eliminandola si perderebbero presenze e report. Se la classe non esiste più, lasciala nell’anno passato.</p>`,`<button class="btn" data-action="close">Ho capito</button>`);
+    ask(`Eliminare ${esc(c.name)}?`,'I bambini tornano tra i non assegnati di quest’anno.','Elimina classe',()=>{S.classes=S.classes.filter(x=>x!==c);S.enroll=S.enroll.filter(e=>e.classId!==c.id);S.users.forEach(u=>u.classIds=u.classIds.filter(x=>x!==c.id));toast('Classe eliminata');go('#classi')})},
+  'user-new':()=>openDlg('Nuovo utente',`<form data-form="user-new" id="un-form" class="stack"><div class="formgrid">
+     <label class="field" for="un-name">Nome *<input id="un-name" name="name" required></label>
+     <label class="field" for="un-email">Email *<input id="un-email" name="email" type="email" required></label>
+     <label class="field" for="un-role">Profilo<select id="un-role" name="role"><option value="insegnante">Classe (insegnante)</option><option value="pomeriggio">Pomeriggio</option><option value="segreteria">Segreteria</option><option value="admin">Amministratore</option></select></label>
+     <label class="field" for="un-cls">Classe (solo insegnanti)<select id="un-cls" name="cls"><option value="">—</option>${classesOf(yearCur().id).map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></label></div>
+     <p class="small muted">Riceverà un’email per scegliere la password.</p></form>`,`<button class="btn" data-action="close">Annulla</button><button class="btn primary" form="un-form">Crea utente</button>`),
+  'user-del':d=>{const u=S.users.find(x=>x.id===+d.id);ask(`Disattivare ${esc(u.name)}?`,'Non potrà più entrare. Gli appelli che ha salvato restano.','Disattiva',()=>{S.users=S.users.filter(x=>x!==u);render()})},
+};
+const C={
+  time:el=>{S.ui.draft.rows[el.dataset.sid][el.dataset.f]=el.value},
+  'reg-year':el=>{S.ui.regYear=+el.value;render()},'reg-date':el=>{if(el.value){S.ui.regDate=el.value;render()}},
+  rep:el=>{const k=el.dataset.k;S.ui.rep[k]=k==='from'||k==='to'?el.value:+el.value;if(k==='year')S.ui.rep.cls=0;render()},
+  'rep-month':el=>{if(!el.value)return;const m=el.value;const last=new Date(+m.slice(0,4),+m.slice(5),0).getDate();Object.assign(S.ui.rep,{from:m+'-01',to:`${m}-${last}`});render()},
+  'cls-year':el=>{S.ui.classYear=+el.value;render()},
+  wiz:el=>{const k=el.dataset.k;S.ui.wiz[k]=k==='yearId'?+el.value:el.value;if(k==='yearId')S.ui.wiz.sids=[];if(el.type==='radio')render()},
+  'wiz-t':el=>{const w=S.ui.wiz,id=+el.value;w.teachers=el.checked?[...w.teachers,id]:w.teachers.filter(x=>x!==id)},
+};
+const F={
+  'login-staff':f=>{const email=f.get('email').trim().toLowerCase(),u=S.users.find(x=>x.email===email);S.ui.lemail=email;
+    // ponytail: nel prototipo la password è uguale per tutti; nel portale vero hash bcrypt + blocco dopo 5 tentativi
+    if(!email||!f.get('pw')){S.ui.lerr='Scrivi email e password.';return render(true)}
+    if(!u||f.get('pw')!=='montessori'){S.ui.lerr='Email o password non corrette. Riprova o usa “Password dimenticata?”.';return render(true)}
+    const role=u.role==='admin'?'admin':u.role;const c=u.classIds[0]&&cls(u.classIds[0]);
+    enter(role,`${u.name}${c?' · '+c.name:''}`,c?.id)},
+  'login-tablet':f=>{const c=cls(+f.get('cls'));
+    if(f.get('pw')!==c.pass){S.ui.lerr=`Password non corretta per ${c.name}. La trovi nella scheda della classe (Direzione).`;return render(true)}
+    enter('insegnante',`Tablet · ${c.name}`,c.id)},
+  forgot:f=>{closeDlg();toast(`Se ${f.get('email')} è registrata, arriverà un’email con il link`)},
+  student:(f,form)=>{const o=Object.fromEntries(f);o.cf=o.cf.toUpperCase();const id=+form.dataset.id;
+    if(S.students.some(s=>!s.deleted&&s.cf===o.cf&&s.id!==id))return toast('Esiste già uno studente con questo codice fiscale',1);
+    if(id){Object.assign(stu(id),o);closeDlg();toast('Modifiche salvate');render()}
+    else{const s={id:newId(),...o,deleted:false};S.students.push(s);closeDlg();toast('Studente creato');go('#studente/'+s.id)}},
+  'year-new':f=>{const name=f.get('name');if(S.years.some(y=>y.name===name)){document.getElementById('yn-err').textContent=`L’anno ${name} esiste già.`;return}
+    const y={id:newId(),name,current:false,pmPass:f.get('pmPass')};S.years.push(y);
+    if(f.get('copy'))classesOf(+f.get('copy')).forEach(c=>S.classes.push({id:newId(),yearId:y.id,name:c.name,level:c.level,pass:genPass()}));
+    closeDlg();toast(`Anno ${name} creato`);render()},
+  'year-pass':(f,form)=>{yearOf(+form.dataset.id).pmPass=f.get('pass');closeDlg();toast('Password cambiata');render()},
+  'cls-pass':(f,form)=>{cls(+form.dataset.id).pass=f.get('pass');closeDlg();toast('Password cambiata');render()},
+  'cls-rename':(f,form)=>{const c=cls(+form.dataset.id),name=f.get('name').trim();
+    if(classesOf(c.yearId).some(x=>x!==c&&x.name.toLowerCase()===name.toLowerCase()))return toast(`Esiste già una classe “${name}” in questo anno`,1);
+    c.name=name;toast('Classe rinominata');render()}, // ponytail: rinomina solo questa classe (il vecchio portale rinominava anche le precedenti)
+  'cls-add':(f,form)=>{const ids=f.getAll('sid').map(Number);const c=cls(+form.dataset.id);ids.forEach(sid=>S.enroll.push({classId:c.id,studentId:sid}));closeDlg();toast(`${ids.length} studenti aggiunti`);render()},
+  'cls-teacher':(f,form)=>{const cid=+form.dataset.id;f.getAll('uid').forEach(uid=>S.users.find(u=>u.id===+uid).classIds.push(cid));closeDlg();render()},
+  'user-new':f=>{const o=Object.fromEntries(f);S.users.push({id:newId(),name:o.name,email:o.email,role:o.role,classIds:o.role==='insegnante'&&o.cls?[+o.cls]:[]});closeDlg();toast('Utente creato');render()},
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-action]');if(!el)return;const f=A[el.dataset.action];if(!f)return;if(el.tagName==='A')e.preventDefault();f(el.dataset,el)});
+document.addEventListener('change',e=>{const el=e.target.closest('[data-change]');if(el&&C[el.dataset.change])C[el.dataset.change](el)});
+document.addEventListener('input',e=>{const el=e.target.closest('[data-input="dt"]');if(!el)return;const st=S.ui.dt[el.dataset.id];st.q=el.value;st.page=0;const pos=el.selectionStart;render();
+  const n=document.getElementById(el.id);if(n){n.focus();n.setSelectionRange(pos,pos)}});
+document.addEventListener('submit',e=>{const form=e.target.closest('[data-form]');if(!form)return;e.preventDefault();F[form.dataset.form](new FormData(form),form)});
+dlg.addEventListener('click',e=>{if(e.target===dlg)closeDlg()});
+render(true);
+</script>
